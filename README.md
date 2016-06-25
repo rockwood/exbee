@@ -1,10 +1,8 @@
 # Exbee
 
-**TODO: Add description**
+Interface with [Xbee](en.wikipedia.org/wiki/XBee) wireless radios in [Elixir](elixir-lang.org).
 
 ## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
   1. Add `exbee` to your list of dependencies in `mix.exs`:
 
@@ -21,4 +19,21 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
       [applications: [:exbee]]
     end
     ```
+
+## Usage
+
+Discover attached devices:
+
+    iex> Exbee.enumerate_devices
+
+    %{
+      "COM1" => %{
+        description: "USB Serial Port",
+        manufacturer: "FTDI",
+        product_id: 123,
+        vendor_id: 456
+      },
+      "COM2" => %{...},
+      "COM3" => %{...}
+    }
 

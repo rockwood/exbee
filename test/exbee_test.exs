@@ -1,8 +1,9 @@
 defmodule ExbeeTest do
-  use ExUnit.Case
-  doctest Exbee
+  use Exbee.TestCase, async: true
 
-  test "the truth" do
-    assert 1 + 1 == 2
+  describe "enumerate_devices/0" do
+    test "delegates to Nerves.UART.enumerate" do
+      assert is_map(Exbee.enumerate_devices)
+    end
   end
 end

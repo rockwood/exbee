@@ -1,0 +1,2 @@
+defmodule Exbee do
+end

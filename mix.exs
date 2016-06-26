@@ -17,7 +17,7 @@ defmodule Exbee.Mixfile do
 
   defp deps do
     [
-      {:nerves_uart, "~> 0.0.6"},
+      {:nerves_uart, "~> 0.0.7"},
       {:ex_doc, "~> 0.11", only: :dev}
     ]
   end

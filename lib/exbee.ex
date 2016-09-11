@@ -31,4 +31,8 @@ defmodule Exbee do
   * `:serial_number` - The device's serial number if it has one
   """
   defdelegate enumerate_devices, to: @current_adapter
+  defdelegate start_link, to: @current_adapter
+  defdelegate open(pid, device, opts), to: @current_adapter
+  defdelegate ping(pid), to: @current_adapter
+  defdelegate get_pan_id(pid), to: @current_adapter
 end

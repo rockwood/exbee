@@ -1,4 +1,6 @@
 defmodule Exbee do
+  @current_adapter Application.get_env(:exbee, :adapter)
+
   @moduledoc """
   Interface with [Xbee](en.wikipedia.org/wiki/XBee) wireless radios in [Elixir](elixir-lang.org).
   """
@@ -28,5 +30,5 @@ defmodule Exbee do
   * `:description` - A description or product name
   * `:serial_number` - The device's serial number if it has one
   """
-  defdelegate enumerate_devices, to: Nerves.UART, as: :enumerate
+  defdelegate enumerate_devices, to: @current_adapter
 end

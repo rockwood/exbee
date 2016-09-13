@@ -34,5 +34,5 @@ defmodule Exbee do
   defdelegate start_link, to: @current_adapter
   defdelegate open(pid, device, opts), to: @current_adapter
   defdelegate ping(pid), to: @current_adapter
-  defdelegate get_pan_id(pid), to: @current_adapter
+  defdelegate get_config(pid), to: @current_adapter
 end

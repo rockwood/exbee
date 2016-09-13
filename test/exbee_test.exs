@@ -30,11 +30,12 @@ defmodule ExbeeTest do
     end
   end
 
-  describe "get_pan_id" do
+  describe "get_config/0" do
     setup [:start, :open]
 
-    test "returns the PAN ID", %{pid: pid} do
-      assert {:ok, "0"} = Exbee.get_pan_id(pid)
+    test "returns the config", %{pid: pid} do
+      {:ok, config} = Exbee.get_config(pid)
+      assert config.pan_id == "0"
     end
   end
 

@@ -1,4 +1,4 @@
-defmodule Exbee.RealAdapter do
+defmodule Exbee.Adapter do
   alias Nerves.UART
   alias Exbee.Commands
 

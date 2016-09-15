@@ -1,6 +1,6 @@
 defmodule Exbee.Device do
   use GenServer
-  alias Exbee.RealAdapter
+  alias Exbee.Adapter
 
   @timeout 2_000
 
@@ -11,7 +11,7 @@ defmodule Exbee.Device do
   end
 
   def enumerate do
-    RealAdapter.enumerate
+    Adapter.enumerate
   end
 
   def start_link(serial_port, opts \\ []) do
@@ -32,13 +32,13 @@ defmodule Exbee.Device do
   # Server
 
   def init([serial_port, opts]) do
-    {:ok, adapter} = RealAdapter.start_link
-    RealAdapter.open(adapter, serial_port, opts)
+    {:ok, adapter} = Adapter.start_link
+    Adapter.open(adapter, serial_port, opts)
     state = %State{adapter: adapter}
     {:ok, state}
   end
 
   def handle_call({:write, data}, _from, %{adapter: adapter} = state) do
-    {:reply, RealAdapter.write(adapter, data), state}
+    {:reply, Adapter.write(adapter, data), state}
   end
 end

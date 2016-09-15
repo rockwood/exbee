@@ -1,5 +1,7 @@
-defmodule Exbee.Commands do
-  @read_config %{
+defmodule Exbee.Configuration do
+  alias Exbee.Device
+
+  @params %{
     pan_id: "ATID",
     my_id: "ATMY",
     node_id: "ATNI",
@@ -50,7 +52,20 @@ defmodule Exbee.Commands do
     supply_voltage: "AT%V"
   }
 
-  def all do
-    @read_config
+  def get(pid) do
+    Device.enter_command_mode(pid)
+    config = @params
+    |> Map.keys
+    |> Enum.reduce(%{}, fn(key, acc) ->
+      case get(pid, key) do
+        {:ok, value} -> Map.put(acc, key, value)
+        {:error, _} -> acc
+      end
+    end)
+
+    {:ok, config}
+  end
+  def get(pid, key) do
+    Device.write(pid, "#{@params[key]}\r")
   end
 end

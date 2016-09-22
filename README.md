@@ -1,6 +1,6 @@
 # Exbee
 
-Interface with [Xbee](en.wikipedia.org/wiki/XBee) wireless radios in [Elixir](elixir-lang.org).
+Interface with [Xbee](http://en.wikipedia.org/wiki/XBee) wireless radios in [Elixir](elixir-lang.org).
 
 ## Installation
 

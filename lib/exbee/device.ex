@@ -1,29 +1,32 @@
 defmodule Exbee.Device do
   use GenServer
-  alias Exbee.Adapter
+  alias Exbee.{Command}
 
-  @timeout 2_000
+  @adapter Application.get_env(:exbee, :adapter)
 
   defmodule State do
-    defstruct [
-      adapter: nil
-    ]
+    defstruct [:controller, :adapter]
   end
 
   def enumerate do
-    Adapter.enumerate
+    @adapter.enumerate
   end
 
   def start_link(serial_port, opts \\ []) do
-    GenServer.start_link(__MODULE__, [serial_port, opts])
+    GenServer.start_link(__MODULE__, [self, serial_port, opts])
   end
 
   def write(pid, data) do
     GenServer.call(pid, {:write, data})
   end
 
+  def read(pid) do
+    GenServer.call(pid, {:read})
+  end
+
   def enter_command_mode(pid) do
-    case write(pid, "+++") do
+    :ok = write(pid, "+++")
+    case read(pid) do
       {:ok, "OK"} -> :ok
       {:ok, ""} -> :error
     end
@@ -31,14 +34,23 @@ defmodule Exbee.Device do
 
   # Server
 
-  def init([serial_port, opts]) do
-    {:ok, adapter} = Adapter.start_link
-    Adapter.open(adapter, serial_port, opts)
-    state = %State{adapter: adapter}
+  def init([controller, serial_port, opts]) do
+    {:ok, adapter} = @adapter.start_link
+    @adapter.open(adapter, serial_port, opts)
+    state = %State{controller: controller, adapter: adapter}
     {:ok, state}
   end
 
   def handle_call({:write, data}, _from, %{adapter: adapter} = state) do
-    {:reply, Adapter.write(adapter, data), state}
+    {:reply, @adapter.write(adapter, data), state}
+  end
+
+  def handle_call({:read}, _from, %{adapter: adapter} = state) do
+    {:reply, @adapter.read(adapter), state}
+  end
+
+  def handle_info({:nerves_uart, _serial_port, message}, %{controller: controller} = state) do
+    send(controller, {:exbee_command, Command.parse(message)})
+    {:noreply, state}
   end
 end

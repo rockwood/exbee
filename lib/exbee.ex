@@ -30,5 +30,7 @@ defmodule Exbee do
   * `:description` - A description or product name
   * `:serial_number` - The device's serial number if it has one
   """
-  defdelegate enumerate_devices, to: @current_adapter
+  defdelegate enumerate, to: @current_adapter
+  defdelegate start_link, to: @current_adapter
+  defdelegate open(pid, device, opts), to: @current_adapter
 end

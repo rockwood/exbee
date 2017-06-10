@@ -16,20 +16,22 @@
 
 defmodule Exbee.CommandTest do
   use Exbee.TestCase
-  alias Exbee.Command
+  alias Exbee.{Command}
+
+  @known <<0, 18, 146, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
+  @unknown <<0, 18, 148, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
+  @invalid <<0, 18, 146, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20, 0>>
 
   describe "parse/1" do
-    setup do
-      bin = <<126, 0, 18, 146, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
-      {:ok, command: Command.parse(bin)}
+    test "with a known command, returns the correct command" do
+      assert {:ok, %Exbee.RxSampleCommand{value: 2}} = Command.parse_message(@known)
     end
 
-    test "type", %{command: command} do
-      assert command.type == 92
-    end
+    test "with an unknown command, returns an invaid error" do
 
-    test "value", %{command: command} do
-      assert command.value == 2
+    test "with an invalid message, returns an invaid error" do
+      {:error, reason} = Command.parse_message(@invalid)
+      assert reason =~ "Invalid"
     end
   end
 end

@@ -24,7 +24,7 @@ Interface with [Xbee](http://en.wikipedia.org/wiki/XBee) wireless radios in [Eli
 
 Discover attached devices:
 
-    iex> Exbee.enumerate_devices
+    iex> Exbee.Device.enumerate
 
     %{
       "COM1" => %{
@@ -37,3 +37,8 @@ Discover attached devices:
       "COM3" => %{...}
     }
 
+Connect to a device:
+
+    iex> Exbee.Device.start_link("COM1")
+
+    {:ok, device_pid}

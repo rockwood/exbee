@@ -21,6 +21,6 @@ use Mix.Config
 #     config :logger, level: :info
 #
 
-config :exbee, adapter: Exbee.Adapter
+config :exbee, adapter: Exbee.NervesUARTAdapter
 
 import_config "#{Mix.env}.exs"

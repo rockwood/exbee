@@ -27,7 +27,10 @@ defmodule Exbee.CommandTest do
       assert {:ok, %Exbee.RxSampleCommand{value: 2}} = Command.parse_message(@known)
     end
 
-    test "with an unknown command, returns an invaid error" do
+    test "with an unknown command, returns the generic command" do
+      {:ok, %Exbee.RxGenericCommand{id: 148, payload: payload}} = Command.parse_message(@unknown)
+      assert <<0, 19, 162, _rest::binary>> = payload
+    end
 
     test "with an invalid message, returns an invaid error" do
       {:error, reason} = Command.parse_message(@invalid)

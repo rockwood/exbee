@@ -1,7 +1,7 @@
 defmodule Exbee.Device do
   use GenServer
   require Logger
-  alias Exbee.{Command}
+  alias Exbee.{Message}
 
   @adapter Application.get_env(:exbee, :adapter)
 
@@ -75,8 +75,8 @@ defmodule Exbee.Device do
   end
 
   def handle_info({:nerves_uart, _serial_port, message}, %{controller: controller} = state) do
-    case Command.parse_message(message) do
-      {:ok, command} -> send(controller, {:exbee_command, command})
+    case Message.parse(message) do
+      {:ok, frame} -> send(controller, {:exbee, frame})
       {:error, reason} -> Logger.debug(reason)
     end
 

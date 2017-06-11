@@ -38,21 +38,8 @@ defmodule Exbee.Device do
     GenServer.start_link(__MODULE__, [self, serial_port, opts])
   end
 
-  def write(pid, data) do
-    GenServer.call(pid, {:write, data})
-  end
-
-  def read(pid) do
-    GenServer.call(pid, {:read})
-  end
-
-  def enter_command_mode(pid) do
-    :ok = write(pid, "+++")
-
-    case read(pid) do
-      {:ok, "OK"} -> :ok
-      {:ok, ""} -> :error
-    end
+  def send_frame(pid, frame) do
+    GenServer.call(pid, {:send_frame, frame})
   end
 
   # Server
@@ -66,12 +53,9 @@ defmodule Exbee.Device do
     {:ok, %State{controller: controller, adapter: @adapter.setup!(adapter, serial_port, opts)}}
   end
 
-  def handle_call({:write, data}, _from, %{adapter: adapter} = state) do
-    {:reply, @adapter.write(adapter, data), state}
-  end
-
-  def handle_call({:read}, _from, %{adapter: adapter} = state) do
-    {:reply, @adapter.read(adapter), state}
+  def handle_call({:send_frame, frame}, _from, %{adapter: adapter} = state) do
+    message = Message.build(frame)
+    {:reply, @adapter.write(adapter, message), state}
   end
 
   def handle_info({:nerves_uart, _serial_port, message}, %{controller: controller} = state) do

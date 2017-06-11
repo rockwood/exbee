@@ -4,7 +4,6 @@ defmodule Exbee.NervesUARTAdapter do
   defdelegate enumerate, to: UART
   defdelegate start_link, to: UART
   defdelegate write(pid, message), to: UART
-  defdelegate read(pid), to: UART
 
   def setup!(adapter, serial_port, opts) do
     :ok = UART.open(adapter, serial_port, opts)

@@ -45,7 +45,7 @@ defmodule Exbee.MessageTest do
 
     test "correctly encodes the length and checksum", %{frame: frame} do
       message = Message.build(frame)
-      assert message == <<0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0xF9>>
+      assert message == <<0x00, 0x03, 0x01, 0x02, 0x03, 0xF9>>
     end
   end
 end

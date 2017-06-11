@@ -1,6 +1,9 @@
 defmodule Exbee.Message do
   alias Exbee.{FrameEncoder, FrameDecoder}
+
   @frame_types %{
+    0x08 => Exbee.ATCommandFrame,
+    0x88 => Exbee.ATCommandResponseFrame,
     0x92 => Exbee.RxSampleFrame,
   }
 
@@ -15,7 +18,7 @@ defmodule Exbee.Message do
 
   def build(frame) do
     encoded_frame = FrameEncoder.encode(frame)
-    <<0x7E, byte_size(encoded_frame)::16, encoded_frame::binary, calculate_checksum(encoded_frame)>>
+    <<byte_size(encoded_frame)::16, encoded_frame::binary, calculate_checksum(encoded_frame)>>
   end
 
   defp get_frame_module(<<frame_type::8, _rest::binary>>) do

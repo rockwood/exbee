@@ -24,7 +24,7 @@ Interface with [Xbee](en.wikipedia.org/wiki/XBee) wireless radios in [Elixir](el
 
 Discover attached devices:
 
-    iex> Exbee.Device.enumerate
+    iex> Exbee.Device.enumerate()
 
     %{
       "COM1" => %{
@@ -42,3 +42,20 @@ Connect to a device:
     iex> Exbee.Device.start_link("COM1")
 
     {:ok, device_pid}
+
+Receiving:
+
+All Xbee compliant frames are sent to the controlling process (in these examples, the current iex
+session).
+
+    iex> flush()
+
+    {:exbee_command, %Exbee.RxSampleFrame{mac_addr: 0000, network_addr: 00000, analog_ch: 0, ...}}
+
+Sending:
+
+    iex> Exbee.send(%Exbee.ATCommandFrame{})
+
+TODO:
+
+  * Rename Command -> Frame

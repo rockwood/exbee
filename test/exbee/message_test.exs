@@ -14,26 +14,26 @@
 # DIO1/AD1 digital value: High
 # Checksum: 14
 
-defmodule Exbee.CommandTest do
+defmodule Exbee.MessageTest do
   use Exbee.TestCase
-  alias Exbee.{Command}
+  alias Exbee.{Message}
 
   @known <<0, 18, 146, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
-  @unknown <<0, 18, 148, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
-  @invalid <<0, 18, 146, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20, 0>>
+  @unknown <<0, 18, 1, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
+  @invalid <<0, 0, 146, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
 
   describe "parse/1" do
-    test "with a known command, returns the correct command" do
-      assert {:ok, %Exbee.RxSampleCommand{value: 2}} = Command.parse_message(@known)
+    test "with a known message, returns the correct frame" do
+      assert {:ok, %Exbee.RxSampleFrame{value: 2}} = Message.parse(@known)
     end
 
     test "with an unknown command, returns the generic command" do
-      {:ok, %Exbee.RxGenericCommand{id: 148, payload: payload}} = Command.parse_message(@unknown)
+      {:ok, %Exbee.GenericFrame{id: 1, payload: payload}} = Message.parse(@unknown)
       assert <<0, 19, 162, _rest::binary>> = payload
     end
 
     test "with an invalid message, returns an invaid error" do
-      {:error, reason} = Command.parse_message(@invalid)
+      {:error, reason} = Message.parse(@invalid)
       assert reason =~ "Invalid"
     end
   end

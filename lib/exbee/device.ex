@@ -1,6 +1,5 @@
 defmodule Exbee.Device do
   use GenServer
-  require Logger
   alias Exbee.{Message}
 
   @adapter Application.get_env(:exbee, :adapter)
@@ -45,7 +44,7 @@ defmodule Exbee.Device do
   # Server
 
   defmodule State do
-    defstruct [:controller, :adapter]
+    defstruct [:controller, :adapter, buffer: <<>>]
   end
 
   def init([controller, serial_port, opts]) do
@@ -58,12 +57,13 @@ defmodule Exbee.Device do
     {:reply, @adapter.write(adapter, message), state}
   end
 
-  def handle_info({:nerves_uart, _serial_port, message}, %{controller: controller} = state) do
-    case Message.parse(message) do
-      {:ok, frame} -> send(controller, {:exbee, frame})
-      {:error, reason} -> Logger.debug(reason)
+  def handle_info({:nerves_uart, _port, data}, %{controller: controller, buffer: buffer} = state) do
+    {new_buffer, frames} = Message.parse(buffer <> data)
+
+    for frame <- frames do
+      send(controller, {:exbee, frame})
     end
 
-    {:noreply, state}
+    {:noreply, %{state | buffer: new_buffer}}
   end
 end

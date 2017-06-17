@@ -19,22 +19,30 @@ defmodule Exbee.MessageTest do
   alias Exbee.{Message}
 
   describe "parse/1" do
-    @known <<0, 18, 146, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
-    @unknown <<0, 18, 1, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
-    @invalid <<0, 0, 146, 0, 19, 162, 0, 64, 175, 220, 167, 208, 92, 1, 1, 0, 2, 0, 0, 2, 20>>
-
-    test "with a known message, returns the correct frame" do
-      assert {:ok, %Exbee.RxSampleFrame{value: 2}} = Message.parse(@known)
+    test "parses basic frames" do
+      {buffer, frames} = Message.parse(<<0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0xF9>>)
+      assert [%Exbee.GenericFrame{payload: <<0x02, 0x03>>}] = frames
+      assert buffer == <<>>
     end
 
-    test "with an unknown command, returns the generic command" do
-      {:ok, %Exbee.GenericFrame{type: 1, payload: payload}} = Message.parse(@unknown)
-      assert <<0, 19, 162, _rest::binary>> = payload
+    test "parses multipe frames in one message" do
+      {buffer, frames} = Message.parse(
+        <<0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0xF9, 0x01, 0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0xF9>>
+      )
+      assert length(frames) == 2
+      assert buffer == <<>>
     end
 
-    test "with an invalid message, returns an invaid error" do
-      {:error, reason} = Message.parse(@invalid)
-      assert reason =~ "Invalid"
+    test "buffers extra end bits" do
+      {buffer, frames} = Message.parse(<<0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0xF9, 0x7E, 0x00>>)
+      assert [%Exbee.GenericFrame{payload: <<0x02, 0x03>>}] = frames
+      assert buffer == <<0x7E, 0x00>>
+    end
+
+    test "drops extra start bits" do
+      {buffer, frames} = Message.parse(<<0x00, 0x01, 0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0xF9>>)
+      assert [%Exbee.GenericFrame{payload: <<0x02, 0x03>>}] = frames
+      assert buffer == <<>>
     end
   end
 
@@ -45,7 +53,7 @@ defmodule Exbee.MessageTest do
 
     test "correctly encodes the length and checksum", %{frame: frame} do
       message = Message.build(frame)
-      assert message == <<0x00, 0x03, 0x01, 0x02, 0x03, 0xF9>>
+      assert message == <<0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0xF9>>
     end
   end
 end

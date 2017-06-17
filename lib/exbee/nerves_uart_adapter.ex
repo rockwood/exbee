@@ -7,7 +7,6 @@ defmodule Exbee.NervesUARTAdapter do
 
   def setup!(adapter, serial_port, opts) do
     :ok = UART.open(adapter, serial_port, opts)
-    :ok = UART.configure(adapter, framing: {Nerves.UART.Framing.Line, separator: <<0x7E>>})
     adapter
   end
 end

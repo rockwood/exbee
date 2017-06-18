@@ -18,6 +18,8 @@ defmodule Exbee.MessageTest do
   use Exbee.TestCase
   alias Exbee.{Message}
 
+  import ExUnit.CaptureLog
+
   describe "parse/1" do
     test "parses basic frames" do
       {buffer, frames} = Message.parse(<<0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0xF9>>)
@@ -43,6 +45,16 @@ defmodule Exbee.MessageTest do
       {buffer, frames} = Message.parse(<<0x00, 0x01, 0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0xF9>>)
       assert [%Exbee.GenericFrame{payload: <<0x02, 0x03>>}] = frames
       assert buffer == <<>>
+    end
+
+    test "ignores frames with invalid checksums and logs the error" do
+      log = capture_log fn ->
+        {buffer, frames} = Message.parse(<<0x7E, 0x00, 0x03, 0x01, 0x02, 0x03, 0x01>>)
+        assert frames == []
+        assert buffer == <<>>
+      end
+
+      assert log =~ "Invalid checksum"
     end
   end
 

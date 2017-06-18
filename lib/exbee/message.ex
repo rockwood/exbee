@@ -17,6 +17,7 @@ defmodule Exbee.Message do
 
   def build(frame) do
     encoded_frame = FrameEncoder.encode(frame)
+
     <<@separator,
       byte_size(encoded_frame)::16,
       encoded_frame::binary,
@@ -27,22 +28,35 @@ defmodule Exbee.Message do
   defp do_parse(<<@separator, rest::binary>>, _, frames), do: do_parse(rest, <<@separator>>, frames)
   defp do_parse(<<next_char::binary-size(1), rest::binary>>, buffer, frames) do
     case buffer <> next_char do
-      <<@separator, length::16, encoded_frame::binary-size(length), _checksum::8>> ->
-        do_parse(rest, <<>>, apply_frame(frames, encoded_frame))
+      <<@separator, length::16, encoded_frame::binary-size(length), checksum::8>> ->
+        do_parse(rest, <<>>, apply_frame(frames, encoded_frame, checksum))
       new_buffer ->
         do_parse(rest, new_buffer, frames)
     end
   end
 
-  defp apply_frame(frames, <<frame_type::8, _rest::binary>> = encoded_frame) do
+  defp apply_frame(frames, <<frame_type::8, _rest::binary>> = encoded_frame, checksum) do
     frame_struct = Map.get(@frame_types, frame_type, Exbee.GenericFrame) |> struct()
 
-    case FrameDecoder.decode(frame_struct, encoded_frame) do
-      {:ok, frame} ->
-        [frame | frames]
+    with {:ok, _} <- validate_checksum(encoded_frame, checksum),
+         {:ok, decoded_frame} <- FrameDecoder.decode(frame_struct, encoded_frame)
+    do
+      [decoded_frame | frames]
+    else
       {:error, reason} ->
-        Logger.debug("Failed to decode frame: #{reason}")
+        Logger.debug(reason)
         frames
+    end
+  end
+
+  defp validate_checksum(encoded_frame, checksum) do
+    calculated = calculate_checksum(encoded_frame)
+
+    if calculated == checksum do
+      {:ok, calculated}
+    else
+      details = "Should equal #{inspect calculated}, but got #{inspect checksum}"
+      {:error, "Invalid checksum for frame #{inspect encoded_frame}. (#{details})"}
     end
   end
 

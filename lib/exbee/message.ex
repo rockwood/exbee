@@ -9,6 +9,7 @@ defmodule Exbee.Message do
     0x08 => Exbee.ATCommandFrame,
     0x88 => Exbee.ATCommandResponseFrame,
     0x92 => Exbee.RxSampleFrame,
+    0x8A => Exbee.ModemStatusFrame,
   }
 
   def parse(data) do

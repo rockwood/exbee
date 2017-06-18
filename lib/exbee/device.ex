@@ -2,8 +2,6 @@ defmodule Exbee.Device do
   use GenServer
   alias Exbee.{Message}
 
-  @adapter Application.get_env(:exbee, :adapter)
-
   @doc """
   Return a map of available serial devices with information about each.
 
@@ -30,38 +28,50 @@ defmodule Exbee.Device do
   * `:serial_number` - The device's serial number if it has one
   """
   def enumerate do
-    @adapter.enumerate()
+    Application.get_env(:exbee, :adapter).enumerate()
   end
 
-  def start_link(serial_port, opts \\ []) do
-    GenServer.start_link(__MODULE__, [self, serial_port, opts])
+  def start_link(args \\ []) do
+    adapter = Keyword.get(args, :adapter, Application.get_env(:exbee, :adapter))
+    serial_port = Keyword.get(args, :serial_port, Application.get_env(:exbee, :serial_port))
+
+    GenServer.start_link(__MODULE__, [self(), adapter, serial_port, args])
   end
 
   def send_frame(pid, frame) do
     GenServer.call(pid, {:send_frame, frame})
   end
 
+  def stop(pid) do
+    GenServer.call(pid, :stop)
+  end
+
   # Server
 
   defmodule State do
-    defstruct [:controller, :adapter, buffer: <<>>]
+    defstruct [:caller_pid, :adapter_pid, :adapter, buffer: <<>>]
   end
 
-  def init([controller, serial_port, opts]) do
-    {:ok, adapter} = @adapter.start_link()
-    {:ok, %State{controller: controller, adapter: @adapter.setup!(adapter, serial_port, opts)}}
+  def init([caller_pid, adapter, serial_port, args]) do
+    {:ok, adapter_pid} = adapter.start_link()
+
+    :ok = adapter.setup(adapter_pid, serial_port, args)
+
+    {:ok, %State{caller_pid: caller_pid, adapter_pid: adapter_pid, adapter: adapter}}
   end
 
-  def handle_call({:send_frame, frame}, _from, %{adapter: adapter} = state) do
-    message = Message.build(frame)
-    {:reply, @adapter.write(adapter, message), state}
+  def handle_call({:send_frame, frame}, _, %{adapter: adapter, adapter_pid: adapter_pid} = state) do
+    {:reply, adapter.write(adapter_pid, Message.build(frame)), state}
+  end
+  def handle_call(:stop, _, %{adapter: adapter, adapter_pid: adapter_pid} = state) do
+    {:reply, adapter.stop(adapter_pid), state}
   end
 
-  def handle_info({:nerves_uart, _port, data}, %{controller: controller, buffer: buffer} = state) do
+  def handle_info({:nerves_uart, _port, data}, %{caller_pid: caller_pid, buffer: buffer} = state) do
     {new_buffer, frames} = Message.parse(buffer <> data)
 
     for frame <- frames do
-      send(controller, {:exbee, frame})
+      send(caller_pid, {:exbee, frame})
     end
 
     {:noreply, %{state | buffer: new_buffer}}

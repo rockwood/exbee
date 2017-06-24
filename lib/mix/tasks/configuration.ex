@@ -2,9 +2,9 @@ defmodule Mix.Tasks.Exbee.Configuration do
   defmodule Query do
     use Mix.Task
 
-    alias Exbee.{Configuration, ATCommandFrame, Request}
+    alias Exbee.{ATCommands, ATCommandFrame, Request}
 
-    @shortdoc "Query all configuration values. Options: [command --serial-port]"
+    @shortdoc "Query configuration values. Options: [command --serial-port]"
 
     def run(args) do
       {device_args, commands, _} = OptionParser.parse(args, switches: [serial_port: :string])
@@ -23,7 +23,7 @@ defmodule Mix.Tasks.Exbee.Configuration do
       end
     end
 
-    defp parse_request_frames([]), do: Configuration.options() |> Map.keys() |> parse_request_frames()
+    defp parse_request_frames([]), do: ATCommands.all() |> Map.keys() |> parse_request_frames()
     defp parse_request_frames(commands) do
       for command <- commands do
         %ATCommandFrame{command: command}
@@ -34,7 +34,7 @@ defmodule Mix.Tasks.Exbee.Configuration do
   defmodule Set do
     use Mix.Task
 
-    alias Exbee.{Configuration, ATCommandFrame, Request}
+    alias Exbee.{ATCommandFrame, Request}
 
     @shortdoc "Set a configuration value. Options: [command=value --serial-port]"
 
@@ -69,12 +69,12 @@ defmodule Mix.Tasks.Exbee.Configuration do
   defmodule Options do
     use Mix.Task
 
-    alias Exbee.{Configuration}
+    alias Exbee.{ATCommands}
 
     @shortdoc "List available configuration options"
 
     def run(_args) do
-      for {command, description} <- Configuration.options() do
+      for {command, description} <- ATCommands.all() do
         IO.puts("#{command}: #{description}")
       end
     end

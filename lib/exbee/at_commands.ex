@@ -1,5 +1,5 @@
-defmodule Exbee.Configuration do
-  @options %{
+defmodule Exbee.ATCommands do
+  @all %{
     "ID" => "Extended PAN ID",
     "SC" => "Scan Channels",
     "SD" => "Scan Duration",
@@ -106,5 +106,5 @@ defmodule Exbee.Configuration do
     "IS" => "Force Sample"
   }
 
-  def options, do: @options
+  def all, do: @all
 end

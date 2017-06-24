@@ -4,20 +4,29 @@ defmodule Mix.Tasks.Exbee.Configuration do
 
     alias Exbee.{Configuration, ATCommandFrame, Request}
 
-    @shortdoc "Query all configuration values. Options: [--serial-port]"
+    @shortdoc "Query all configuration values. Options: [command --serial-port]"
 
     def run(args) do
-      {device_args, _, _} = OptionParser.parse(args, switches: [serial_port: :string])
+      {device_args, commands, _} = OptionParser.parse(args, switches: [serial_port: :string])
 
-      request_frames = Enum.map Configuration.options(), fn({command, _}) ->
-        %ATCommandFrame{command: command}
+      {:ok, response_frames} = commands |> parse_request_frames() |> Request.run(device_args)
+
+      for frame <- response_frames do
+        case frame do
+          %{command: command, value: value, status: :ok} ->
+            IO.puts("#{command}: #{inspect(value, base: :hex)}")
+          %{command: command, status: error_status} ->
+            IO.puts("#{command}: #{error_status}")
+          _ ->
+            nil
+        end
       end
+    end
 
-      {:ok, results} = Request.run(request_frames, device_args)
-
-      Enum.each results, fn({request_frame, response_frames}) ->
-        response = Enum.map_join(response_frames, ", ", &inspect(&1, base: :hex))
-        IO.puts("#{request_frame.command}: #{response}")
+    defp parse_request_frames([]), do: Configuration.options() |> Map.keys() |> parse_request_frames()
+    defp parse_request_frames(commands) do
+      for command <- commands do
+        %ATCommandFrame{command: command}
       end
     end
   end
@@ -32,25 +41,27 @@ defmodule Mix.Tasks.Exbee.Configuration do
     @available_args [:serial_port]
 
     def run(args) do
-      {options, command_pairs, _} = OptionParser.parse(args, switches: [serial_port: :string])
+      {device_args, command_pairs, _} = OptionParser.parse(args, switches: [serial_port: :string])
 
-      request_frames = Enum.map(command_pairs, &parse_command_pair/1)
+      {:ok, response_frames} = command_pairs |> parse_request_frames() |> Request.run(device_args)
 
-      {:ok, results} = Request.run(request_frames, options)
-
-      Enum.each results, fn({request_frame, response_frames}) ->
-        response = Enum.map_join(response_frames, ", ", &inspect(&1, base: :hex))
-        IO.puts("#{request_frame.command}: #{response}")
+      for frame <- response_frames do
+        case frame do
+          %{command: command, status: status} -> IO.puts("#{command}: #{status}")
+          other_frame -> IO.puts("#{inspect other_frame}")
+        end
       end
     end
 
-    def parse_command_pair(command_pair) do
-      case String.split(command_pair, "=") do
-        [raw_command, raw_value] ->
-          {value, _} = Code.eval_string(raw_value)
-          %ATCommandFrame{command: String.upcase(raw_command), value: value}
-        _ ->
-          raise ArgumentError, message: "Unable to parse #{command_pair}."
+    def parse_request_frames(command_pairs) do
+      for command_pair <- command_pairs do
+        case String.split(command_pair, "=") do
+          [raw_command, raw_value] ->
+            {value, _} = Code.eval_string(raw_value)
+            %ATCommandFrame{command: String.upcase(raw_command), value: value}
+          _ ->
+            raise ArgumentError, message: "Unable to parse #{command_pair}."
+        end
       end
     end
   end

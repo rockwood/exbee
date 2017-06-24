@@ -1,24 +1,32 @@
 defmodule Exbee.Request do
-  @frame_timeout 2_000
+  @default_frame_timeout 2_000
 
   alias Exbee.Device
   require Logger
 
-  def run(request_frames, device_args \\ []) do
-    total_timeout = length(request_frames) * @frame_timeout
-    task = Task.async(fn -> do_run(request_frames, device_args) end)
+  def run(request_frames, device_args \\ [], frame_timeout \\ @default_frame_timeout) do
+    total_timeout = length(request_frames) * frame_timeout
+    task = Task.async(fn -> do_run(request_frames, device_args, frame_timeout) end)
 
-    case Task.await(task, total_timeout + @frame_timeout) do
+    case Task.await(task, total_timeout + frame_timeout) do
       {:ok, results} -> {:ok, results}
       _ -> {:error, "Failed to receive all frames within #{total_timeout}ms"}
     end
   end
 
-  defp do_run(request_frames, device_args) do
+  defp do_run(request_frames, device_args, frame_timeout) do
     {:ok, device} = Device.start_link(device_args)
 
-    results = Enum.map request_frames, fn(frame) ->
-      {frame, send_frame(device, frame)}
+    results = Enum.flat_map request_frames, fn(request_frame) ->
+      Device.send_frame(device, request_frame)
+
+      case receive_frame(frame_timeout) do
+        {:ok, response_frame} ->
+          [response_frame]
+        {:error, reason} ->
+          Logger.warn("#{reason} (#{inspect request_frame})")
+          []
+      end
     end
 
     :ok = Device.stop(device)
@@ -26,21 +34,13 @@ defmodule Exbee.Request do
     {:ok, results}
   end
 
-  defp send_frame(device, {frame, response_count}), do: send_frame(device, frame, response_count)
-  defp send_frame(device, frame, response_count \\ 1) do
-    :ok = Device.send_frame(device, frame)
-    receive_frames([], response_count)
-  end
-
-  defp receive_frames(results, count) when count <= 0, do: results
-  defp receive_frames(results, count) do
+  defp receive_frame(timeout) do
     receive do
-      {:exbee, frame} -> receive_frames([frame | results], count - 1)
-      _ -> receive_frames(results, count)
+      {:exbee, response_frame} -> {:ok, response_frame}
+      _ -> receive_frame(timeout)
     after
-      @frame_timeout ->
-        Logger.warn("Failed to receive response frame within #{@frame_timeout}ms")
-        results
+      timeout ->
+        {:error, "Failed to receive response frame within #{timeout}ms"}
     end
   end
 end

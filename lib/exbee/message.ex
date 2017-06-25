@@ -5,11 +5,15 @@ defmodule Exbee.Message do
 
   @separator <<0x7E>>
 
-  @frame_types %{
-    0x08 => Exbee.ATCommandFrame,
+  @decodeable_frames %{
     0x88 => Exbee.ATCommandResponseFrame,
-    0x92 => Exbee.RxSampleFrame,
     0x8A => Exbee.ModemStatusFrame,
+    0x8B => Exbee.TransmitResponseFrame,
+    0x90 => Exbee.ReceiveFrame,
+    0x91 => Exbee.ReceiveExplicitFrame,
+    0x92 => Exbee.ReceiveSampleFrame,
+    0x94 => Exbee.ReceiveSensorReadFrame,
+    0x97 => Exbee.RemoteATCommandResponseFrame,
   }
 
   def parse(data) do
@@ -37,7 +41,7 @@ defmodule Exbee.Message do
   end
 
   defp apply_frame(frames, <<frame_type::8, _rest::binary>> = encoded_frame, checksum) do
-    frame_struct = Map.get(@frame_types, frame_type, Exbee.GenericFrame) |> struct()
+    frame_struct = Map.get(@decodeable_frames, frame_type, Exbee.GenericFrame) |> struct()
 
     with {:ok, _} <- validate_checksum(encoded_frame, checksum),
          {:ok, decoded_frame} <- FrameDecoder.decode(frame_struct, encoded_frame)

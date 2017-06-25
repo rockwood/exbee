@@ -38,8 +38,6 @@ defmodule Mix.Tasks.Exbee.Configuration do
 
     @shortdoc "Set a configuration value. Options: [command=value --serial-port]"
 
-    @available_args [:serial_port]
-
     def run(args) do
       {device_args, command_pairs, _} = OptionParser.parse(args, switches: [serial_port: :string])
 

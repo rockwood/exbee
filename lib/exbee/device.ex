@@ -2,6 +2,9 @@ defmodule Exbee.Device do
   use GenServer
   alias Exbee.{Message}
 
+  @config Application.get_all_env(:exbee)
+  @adapter_options [:speed, :data_bits, :stop_bits, :parity, :flow_control]
+
   @doc """
   Return a map of available serial devices with information about each.
 
@@ -28,13 +31,13 @@ defmodule Exbee.Device do
   * `:serial_number` - The device's serial number if it has one
   """
   def enumerate do
-    Application.get_env(:exbee, :adapter).enumerate()
+    @config[:adapter].enumerate()
   end
 
   def start_link(options \\ []) do
-    serial_port = Keyword.get(options, :serial_port, Application.get_env(:exbee, :serial_port))
-    adapter = Keyword.get(options, :adapter, Application.get_env(:exbee, :adapter))
-    adapter_options = Keyword.drop(options, [:adapter, :serial_port])
+    serial_port = Keyword.get(options, :serial_port, @config[:serial_port])
+    adapter = Keyword.get(options, :adapter, @config[:adapter])
+    adapter_options = Keyword.merge(@config, options) |> Keyword.take(@adapter_options)
 
     GenServer.start_link(__MODULE__, [self(), serial_port, adapter, adapter_options])
   end

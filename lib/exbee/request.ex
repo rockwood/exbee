@@ -39,8 +39,7 @@ defmodule Exbee.Request do
       {:exbee, response_frame} -> {:ok, response_frame}
       _ -> receive_frame(timeout)
     after
-      timeout ->
-        {:error, "Failed to receive response frame within #{timeout}ms"}
+      timeout -> {:error, "Failed to receive response frame within #{timeout}ms"}
     end
   end
 end

@@ -31,11 +31,12 @@ defmodule Exbee.Device do
     Application.get_env(:exbee, :adapter).enumerate()
   end
 
-  def start_link(args \\ []) do
-    adapter = Keyword.get(args, :adapter, Application.get_env(:exbee, :adapter))
-    serial_port = Keyword.get(args, :serial_port, Application.get_env(:exbee, :serial_port))
+  def start_link(options \\ []) do
+    serial_port = Keyword.get(options, :serial_port, Application.get_env(:exbee, :serial_port))
+    adapter = Keyword.get(options, :adapter, Application.get_env(:exbee, :adapter))
+    adapter_options = Keyword.drop(options, [:adapter, :serial_port])
 
-    GenServer.start_link(__MODULE__, [self(), adapter, serial_port, args])
+    GenServer.start_link(__MODULE__, [self(), serial_port, adapter, adapter_options])
   end
 
   def send_frame(pid, frame) do
@@ -46,16 +47,14 @@ defmodule Exbee.Device do
     GenServer.call(pid, :stop)
   end
 
-  # Server
-
   defmodule State do
     defstruct [:caller_pid, :adapter_pid, :adapter, buffer: <<>>]
   end
 
-  def init([caller_pid, adapter, serial_port, args]) do
+  def init([caller_pid, serial_port, adapter, adapter_options]) do
     {:ok, adapter_pid} = adapter.start_link()
 
-    :ok = adapter.setup(adapter_pid, serial_port, args)
+    :ok = adapter.open(adapter_pid, serial_port, adapter_options)
 
     {:ok, %State{caller_pid: caller_pid, adapter_pid: adapter_pid, adapter: adapter}}
   end

@@ -1,4 +1,11 @@
 defmodule Exbee.ATCommandResponseFrame do
+  @moduledoc """
+  Sent in response to an `Exbee.ATCommandFrame` or `Exbee.ATCommandQueueFrame`.
+
+  Some commands send back multiple frames; for example, the `ND` command.
+  """
+
+  @type t :: %__MODULE__{id: binary, command: String.t, status: atom, value: binary}
   defstruct [id: 0x01, command: nil, status: nil, value: nil]
 
   defimpl Exbee.FrameDecoder do

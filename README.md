@@ -22,6 +22,8 @@ Interface with [Xbee](http://en.wikipedia.org/wiki/XBee) wireless radios in [Eli
 
 ## Usage
 
+Exbee is intended for use with Xbee modules in API mode.
+
 Discover attached devices:
 
     iex> Exbee.Device.enumerate()
@@ -37,9 +39,9 @@ Discover attached devices:
       "COM3" => %{...}
     }
 
-Connect to a device:
+Start a device:
 
-    iex> Exbee.Device.start_link("COM1")
+    iex> Exbee.Device.start_link(serial_port: "COM1", speed: 9600, ...)
 
     {:ok, device_pid}
 
@@ -50,12 +52,8 @@ session).
 
     iex> flush()
 
-    {:exbee_command, %Exbee.RxSampleFrame{mac_addr: 0000, network_addr: 00000, analog_ch: 0, ...}}
+    {:exbee, %Exbee.ReceiveSampleFrame{mac_addr: 0000, network_addr: 00000, analog_ch: 0, ...}}
 
 Sending:
 
-    iex> Exbee.send(%Exbee.ATCommandFrame{})
-
-TODO:
-
-  * Rename Command -> Frame
+    iex> Exbee.send(%Exbee.ATCommandFrame{command: "NJ", value: 1})

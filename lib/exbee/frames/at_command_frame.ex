@@ -1,4 +1,11 @@
 defmodule Exbee.ATCommandFrame do
+  @moduledoc """
+  Query or set AT parameters on a local device.
+
+  To query parameter values, send with `value: nil`.
+  """
+
+  @type t :: %__MODULE__{id: binary, command: String.t, value: binary}
   defstruct [id: 0x01, command: "", value: nil]
 
   defimpl Exbee.FrameEncoder do

@@ -1,4 +1,8 @@
 defmodule Exbee.Message do
+  @moduledoc """
+  Converts between binary messages and frames.
+  """
+
   alias Exbee.{FrameEncoder, FrameDecoder}
 
   require Logger
@@ -16,10 +20,21 @@ defmodule Exbee.Message do
     0x97 => Exbee.RemoteATCommandResponseFrame,
   }
 
+  @doc """
+  Decodes a binary message into frames using the `Exbee.FrameDecoder` protocol. Because messages
+  can arrive incomplete, this returns a buffer of any remaining bytes. The caller should return this
+  buffer prepended to the next message It also validates each frame has the correct checksum.
+  """
+  @spec parse(binary) :: {binary, [struct]}
   def parse(data) do
     do_parse(data, <<>>, [])
   end
 
+  @doc """
+  Encodes a frame into a binary message using the `Exbee.FrameEncoder` protocol. It applies the
+  separator, length, and checksum bytes.
+  """
+  @spec build(FrameEncoder.t) :: binary
   def build(frame) do
     encoded_frame = FrameEncoder.encode(frame)
 

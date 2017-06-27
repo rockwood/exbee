@@ -1,4 +1,6 @@
 defmodule Exbee.ATCommands do
+  @moduledoc false
+
   @all %{
     "ID" => "Extended PAN ID",
     "SC" => "Scan Channels",

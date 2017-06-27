@@ -1,4 +1,10 @@
 defmodule Exbee.ReceiveSensorReadFrame do
+  @moduledoc """
+  Sent when a device receives a remote sensor.
+  """
+
+  @type t :: %__MODULE__{mac_addr: binary, network_addr: binary, options: atom, type: binary,
+                         ad_value: binary, temperature_value: binary}
   defstruct [:mac_addr, :network_addr, :options, :type, :ad_value, :temperature_value]
 
   defimpl Exbee.FrameDecoder do

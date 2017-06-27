@@ -1,4 +1,12 @@
 defmodule Exbee.ReceiveFrame do
+  @moduledoc """
+  Sent when a device receives a transmission from a remote node.
+
+  A device configured with the standard API Rx Indicator (`AO = 0`) will return this frame when it
+  receives an RF packet.
+  """
+
+  @type t :: %__MODULE__{mac_addr: binary, network_addr: binary, type: binary, payload: binary}
   defstruct [:mac_addr, :network_addr, :type, :payload]
 
   defimpl Exbee.FrameDecoder do

@@ -1,7 +1,9 @@
 defmodule Mix.Tasks.Exbee.SerialPorts do
-  use Mix.Task
+  @moduledoc """
+  List available serial ports
+  """
 
-  @shortdoc "List available serial ports"
+  use Mix.Task
 
   def run(_) do
     for {name, config} <- Exbee.Device.enumerate() do

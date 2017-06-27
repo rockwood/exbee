@@ -1,4 +1,6 @@
 defmodule Exbee.FakeAdapter do
+  @moduledoc false
+
   use GenServer
 
   alias __MODULE__.MessageQueue
@@ -6,6 +8,8 @@ defmodule Exbee.FakeAdapter do
   @behaviour Exbee.Adapter
 
   defmodule State do
+    @moduledoc false
+
     defstruct [:controlling_pid]
   end
 
@@ -31,6 +35,8 @@ defmodule Exbee.FakeAdapter do
   end
 
   defmodule MessageQueue do
+    @moduledoc false
+
     use GenServer
 
     def start_link do

@@ -1,4 +1,8 @@
 defmodule Exbee.Adapter do
+  @moduledoc """
+  Interface to a serial connection.
+  """
+
   @type adapter_option ::
     {:speed, non_neg_integer} |
     {:data_bits, 5..8} |

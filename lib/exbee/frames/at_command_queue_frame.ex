@@ -1,4 +1,17 @@
 defmodule Exbee.ATCommandQueueFrame do
+  @moduledoc """
+  Query or set AT parameters on a local device.
+
+  In contrast to the `Exbee.ATCommandFrame`, this frame queues new parameter values and does not
+  apply them until issuing either an `Exbee.ATCommandFrame`, or an `Exbee.ATCommandQueueFrame` with
+  `command: "AC"`
+
+  When querying parameter values, this frame behaves identically to the `Exbee.ATCommandFrame`
+  frame. The device returns register queries immediately and does not queue them. The receiving
+  device will issue `Exbee.ATCommandResponseFrame` in response.
+  """
+
+  @type t :: %__MODULE__{id: binary, command: String.t, value: binary}
   defstruct [id: 0x01, command: "", value: nil]
 
   defimpl Exbee.FrameEncoder do

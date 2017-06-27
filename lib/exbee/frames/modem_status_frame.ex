@@ -1,4 +1,19 @@
 defmodule Exbee.ModemStatusFrame do
+  @moduledoc """
+  Sent to indicate the status of a device.
+
+  Status messages include:
+
+    * `:hardware_reset`
+    * `:watchdog_timer_reset`
+    * `:disassociated`
+    * `:coordinator_started`
+    * `:security_key_updated`
+    * `:voltage_supply_limit_exceeded`
+    * `:modem_configuration_change`
+  """
+
+  @type t :: %__MODULE__{status: atom}
   defstruct [:status]
 
   defimpl Exbee.FrameDecoder do

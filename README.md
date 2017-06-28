@@ -1,59 +1,70 @@
 # Exbee
 
-Interface with [Xbee](http://en.wikipedia.org/wiki/XBee) wireless radios in [Elixir](elixir-lang.org).
+Communicate with [XBee](http://en.wikipedia.org/wiki/XBee) wireless radios in Elixir.
 
 ## Installation
 
-  1. Add `exbee` to your list of dependencies in `mix.exs`:
+Add `exbee` to your list of dependencies in `mix.exs`:
 
-    ```elixir
-    def deps do
-      [{:exbee, "~> 0.1.0"}]
-    end
-    ```
-
-  2. Ensure `exbee` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:exbee]]
-    end
-    ```
+```elixir
+def deps do
+  [{:exbee, "~> 0.1.0"}]
+end
+```
 
 ## Usage
 
-Exbee is intended for use with Xbee modules in API mode.
 
-Discover attached devices:
+Exbee assumes that XBee modules are set to API mode. In API mode, XBee modules send and receive
+commands via encoded frames.
 
-    iex> Exbee.Device.enumerate()
+### Discover attached serial ports
 
-    %{
-      "COM1" => %{
-        description: "USB Serial Port",
-        manufacturer: "FTDI",
-        product_id: 123,
-        vendor_id: 456
-      },
-      "COM2" => %{...},
-      "COM3" => %{...}
-    }
+```elixir
+iex> Exbee.enumerate()
+%{
+  "COM1" => %{description: "USB Serial", manufacturer: "FTDI", product_id: 1, vendor_id: 2},
+  "COM2" => %{...},
+  "COM3" => %{...}
+}
+```
 
-Start a device:
+### Start an Exbee process
 
-    iex> Exbee.Device.start_link(serial_port: "COM1", speed: 9600, ...)
+Frames are sent via the `Exbee.send_frame/2` function. Frames received on the serial port are
+reported as messages to the current process. The messages have the form: `{:exbee, frame}`
 
-    {:ok, device_pid}
+This example starts an Exbee process and sends an `Exbee.ATCommandFrame` to change the value of
+the `NJ` parameter. Upon receiving the command, the XBee module will return an
+`Exbee.ATCommandResponseFrame` indicating the status of the request.
 
-Receiving:
+```elixir
+iex> Exbee.send_frame(pid, %Exbee.ATCommandFrame{command: "NJ", value: 1})
+:ok
 
-All Xbee compliant frames are sent to the controlling process (in these examples, the current iex
-session).
+iex> flush()
+{:exbee, %Exbee.ATCommandResponseFrame{command: "NJ", status: :ok, value: ...}}
+```
 
-    iex> flush()
+### Configuration
 
-    {:exbee, %Exbee.ReceiveSampleFrame{mac_addr: 0000, network_addr: 00000, analog_ch: 0, ...}}
+Exbee options can either be passed directly to `Exbee.start_link/2`, or they'll be read from
+`:exbee` config values. For example, to default to a specific serial port, add this to the
+project's `config.exs` file.
 
-Sending:
+```elixir
+config :exbee,
+  serial_port: "COM1"
+```
 
-    iex> Exbee.send(%Exbee.ATCommandFrame{command: "NJ", value: 1})
+The following options are available:
+
+  * `:serial_port` - The serial interface connected to the Xbee device.
+  * `:speed` - (number) set the initial baudrate (e.g., 115200)
+  * `:data_bits` - (5, 6, 7, 8) set the number of data bits (usually 8)
+  * `:stop_bits` - (1, 2) set the number of stop bits (usually 1)
+  * `:parity` - (`:none`, `:even`, `:odd`, `:space`, or `:mark`) set the parity. Usually this is
+    `:none`. Other values:
+    * `:space` means that the parity bit is always 0
+    * `:mark` means that the parity bit is always 1
+  * `:flow_control` - (`:none`, `:hardware`, or `:software`) set the flow control strategy.

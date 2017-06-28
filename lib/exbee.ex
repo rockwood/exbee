@@ -19,8 +19,8 @@ defmodule Exbee do
     * `Exbee.TransmitFrame`
     * `Exbee.TransmitResponseFrame`
 
-  Frames are sent via the `send_frame/1` function. Frames received on the serial port are reported
-  as messages to the current process. The messages have the following form:
+  Frames are sent via the `Exbee.send_frame/2` function. Frames received on the serial port are
+  reported as messages to the current process. The messages have the following form:
 
       {:exbee, frame}
 
@@ -47,12 +47,7 @@ defmodule Exbee do
 
       iex> Exbee.enumerate()
       %{
-        "COM1" => %{
-          description: "USB Serial Port",
-          manufacturer: "FTDI",
-          product_id: 123,
-          vendor_id: 456
-        },
+        "COM1" => %{description: "USB Serial", manufacturer: "FTDI", product_id: 1, vendor_id: 2},
         "COM2" => %{...},
         "COM3" => %{...}
       }

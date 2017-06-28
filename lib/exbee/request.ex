@@ -1,7 +1,7 @@
 defmodule Exbee.Request do
   @moduledoc """
   Sends a list of frames and returns any responses. In most situations, it's recommended to start an
-  Exbee process manually rather of using this module.
+  `Exbee` process manually rather of using this module.
   """
 
   @default_frame_timeout 2_000

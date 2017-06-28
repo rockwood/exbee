@@ -1,7 +1,9 @@
 defmodule Mix.Tasks.Exbee.SerialPorts do
+  @shortdoc "List available serial ports"
   @moduledoc """
   List available serial ports
   """
+
 
   use Mix.Task
 

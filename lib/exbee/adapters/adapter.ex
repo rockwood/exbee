@@ -8,9 +8,7 @@ defmodule Exbee.Adapter do
     {:data_bits, 5..8} |
     {:stop_bits, 1..2} |
     {:parity, :none | :even | :odd | :space | :mark} |
-    {:flow_control, :none | :hardware | :software} |
-    {:framing, module | {module, [term]}} |
-    {:rx_framing_timeout, integer}
+    {:flow_control, :none | :hardware | :software}
 
   @callback enumerate() :: map
   @callback start_link() :: {:ok, pid} | {:error, term}

@@ -2,6 +2,7 @@ defmodule Mix.Tasks.Exbee.Configuration do
   @moduledoc false
 
   defmodule Query do
+    @shortdoc "Query configuration values. Options: [command --serial-port]"
     @moduledoc """
     Query configuration values. Options: [command --serial-port].
     """
@@ -36,8 +37,9 @@ defmodule Mix.Tasks.Exbee.Configuration do
   end
 
   defmodule Set do
+    @shortdoc "Set a configuration value. Options: [command=value --serial-port]"
     @moduledoc """
-    Set a configuration value. Options: [command=value --serial-port].
+    Set a configuration values. Options: [command=value --serial-port].
     """
 
     use Mix.Task
@@ -71,6 +73,7 @@ defmodule Mix.Tasks.Exbee.Configuration do
   end
 
   defmodule Options do
+    @shortdoc "List available configuration options."
     @moduledoc """
     List available configuration options.
     """

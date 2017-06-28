@@ -4,9 +4,9 @@ defmodule Exbee.EndToEndTest do
 
   @moduletag :integration
 
-  describe "enumerate/0" do
+  describe "serial_ports/0" do
     test "returns each connected serial port" do
-      assert is_map(Exbee.enumerate)
+      assert Exbee.serial_ports() |> is_map()
     end
   end
 

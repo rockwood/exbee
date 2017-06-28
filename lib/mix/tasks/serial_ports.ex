@@ -4,11 +4,10 @@ defmodule Mix.Tasks.Exbee.SerialPorts do
   List available serial ports
   """
 
-
   use Mix.Task
 
   def run(_) do
-    for {name, config} <- Exbee.enumerate() do
+    for {name, config} <- Exbee.serial_ports() do
       IO.puts("#{name} => #{inspect config}")
     end
   end

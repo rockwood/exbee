@@ -45,7 +45,7 @@ defmodule Exbee do
   @doc """
   Return a map of available serial devices with information about each.
 
-      iex> Exbee.enumerate()
+      iex> Exbee.serial_ports()
       %{
         "COM1" => %{description: "USB Serial", manufacturer: "FTDI", product_id: 1, vendor_id: 2},
         "COM2" => %{...},
@@ -72,7 +72,8 @@ defmodule Exbee do
     {:parity, :none | :even | :odd | :space | :mark} |
     {:flow_control, :none | :hardware | :software}
 
-  def enumerate do
+  @spec serial_ports :: map
+  def serial_ports do
     @config[:adapter].enumerate()
   end
 

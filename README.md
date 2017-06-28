@@ -21,7 +21,7 @@ commands via encoded frames.
 ### Discover attached serial ports
 
 ```elixir
-iex> Exbee.enumerate()
+iex> Exbee.serial_ports()
 %{
   "COM1" => %{description: "USB Serial", manufacturer: "FTDI", product_id: 1, vendor_id: 2},
   "COM2" => %{...},

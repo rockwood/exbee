@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Exbee.Configuration do
+defmodule Mix.Tasks.Exbee.At do
   @moduledoc false
 
   defmodule Query do

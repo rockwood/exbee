@@ -1,12 +1,11 @@
 defmodule Exbee.Request do
   @moduledoc """
-  Sends a list of frames and returns any responses. In most situations, it's recommended to start a
-  device manually rather of using this module.
+  Sends a list of frames and returns any responses. In most situations, it's recommended to start an
+  Exbee process manually rather of using this module.
   """
 
   @default_frame_timeout 2_000
 
-  alias Exbee.Device
   require Logger
 
   @spec run([Exbee.FrameEncoder.t], [], non_neg_integer) :: {:ok, [struct]}
@@ -21,10 +20,10 @@ defmodule Exbee.Request do
   end
 
   defp do_run(request_frames, device_options, frame_timeout) do
-    {:ok, device} = Device.start_link(device_options)
+    {:ok, device} = Exbee.start_link(device_options)
 
     results = Enum.flat_map request_frames, fn(request_frame) ->
-      Device.send_frame(device, request_frame)
+      Exbee.send_frame(device, request_frame)
 
       case receive_frame(frame_timeout) do
         {:ok, response_frame} ->
@@ -35,7 +34,7 @@ defmodule Exbee.Request do
       end
     end
 
-    :ok = Device.stop(device)
+    :ok = Exbee.stop(device)
 
     {:ok, results}
   end

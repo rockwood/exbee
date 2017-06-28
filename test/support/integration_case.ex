@@ -1,10 +1,9 @@
 defmodule Exbee.IntegrationCase do
   use ExUnit.CaseTemplate
-  alias Exbee.Device
 
   setup do
-    {serial_port, _} = Device.enumerate() |> Enum.find(&filter_test_device/1)
-    {:ok, device} = Device.start_link(serial_port: serial_port)
+    {serial_port, _} = Exbee.enumerate() |> Enum.find(&filter_test_device/1)
+    {:ok, device} = Exbee.start_link(serial_port: serial_port)
     {:ok, device: device, serial_port: serial_port}
   end
 

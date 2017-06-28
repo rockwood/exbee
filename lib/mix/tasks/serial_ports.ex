@@ -6,7 +6,7 @@ defmodule Mix.Tasks.Exbee.SerialPorts do
   use Mix.Task
 
   def run(_) do
-    for {name, config} <- Exbee.Device.enumerate() do
+    for {name, config} <- Exbee.enumerate() do
       IO.puts("#{name} => #{inspect config}")
     end
   end

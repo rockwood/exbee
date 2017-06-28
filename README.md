@@ -75,3 +75,7 @@ The following options are available:
   * `mix exbee.at.options` - List available configuration options
   * `mix exbee.at.query` - Query configuration values. Options: [command --serial-port]
   * `mix exbee.at.set` - Set a configuration value. Options: [command=value --serial-port]
+
+## License
+
+This software is licensed under the [Apache 2 License](LICENSE).

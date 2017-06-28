@@ -68,3 +68,10 @@ The following options are available:
     * `:space` means that the parity bit is always 0
     * `:mark` means that the parity bit is always 1
   * `:flow_control` - (`:none`, `:hardware`, or `:software`) set the flow control strategy.
+
+## Mix Tasks
+
+  * `mix exbee.serial_ports` - List available serial ports
+  * `mix exbee.at.options` - List available configuration options
+  * `mix exbee.at.query` - Query configuration values. Options: [command --serial-port]
+  * `mix exbee.at.set` - Set a configuration value. Options: [command=value --serial-port]

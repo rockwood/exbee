@@ -4,15 +4,17 @@ defmodule Exbee.Mixfile do
   def project do
     [
       app: :exbee,
-      version: "0.1.0",
+      description: "Communicate with XBee wireless radios in Elixir",
+      version: "0.0.1",
       elixir: "~> 1.4",
       elixirc_paths: elixirc_paths(Mix.env),
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       source_url: "https://github.com/rockwood/exbee",
       deps: deps(),
+      package: package(),
       docs: [
-        main: "Exbee",
+        main: "README",
         extras: ["README.md"]
       ]
     ]
@@ -29,7 +31,15 @@ defmodule Exbee.Mixfile do
     ]
   end
 
-  # Specifies which paths to compile per environment.
+  defp package do
+    [
+      name: :exbee,
+      maintainers: ["Kevin Rockwood"],
+      licenses: ["Apache 2.0"],
+      links: %{"GitHub" => "https://github.com/rockwood/exbee"}
+    ]
+  end
+
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_),     do: ["lib"]
 end

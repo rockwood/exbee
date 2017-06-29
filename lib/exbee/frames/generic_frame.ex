@@ -1,4 +1,5 @@
 defmodule Exbee.GenericFrame do
+  @type t :: %__MODULE__{type: binary, payload: binary}
   defstruct [:type, :payload]
 
   defimpl Exbee.FrameDecoder do

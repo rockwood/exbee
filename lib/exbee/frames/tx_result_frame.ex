@@ -1,7 +1,7 @@
-defmodule Exbee.TransmitResponseFrame do
+defmodule Exbee.TxResultFrame do
   @moduledoc """
-  Sent upon completion of a `Exbee.TransmitFrame` or `Exbee.TransmitExplicitFrame`. The status
-  message indicates if the transmission was successful.
+  Received upon completion of a `Exbee.TxFrame` or `Exbee.ExplicitTxFrame`. The
+  `:deliver_status` indicates whether the transmission was successful.
 
   Possible status values include:
 

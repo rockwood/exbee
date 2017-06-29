@@ -1,6 +1,6 @@
-defmodule Exbee.ModemStatusFrame do
+defmodule Exbee.DeviceStatusFrame do
   @moduledoc """
-  Sent to indicate the status of a device.
+  Indicates the status of a device.
 
   Status messages include:
 

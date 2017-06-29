@@ -1,9 +1,9 @@
 defmodule Exbee.RemoteATCommandFrame do
   @moduledoc """
-  Set AT parameters on a remote device.
+  Transmits AT parameters to a remote device.
 
   For parameter changes on the remote device to take effect, send either the apply changes option
-  (`option: 0x01`), or send an `AC` command to the remote.
+  (`option: 0x01`), or send an `AC` command to the remote node.
   """
 
   @type t :: %__MODULE__{id: binary, mac_addr: binary, network_addr: binary, options: binary,

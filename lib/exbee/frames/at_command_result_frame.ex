@@ -1,6 +1,6 @@
-defmodule Exbee.ATCommandResponseFrame do
+defmodule Exbee.ATCommandResultFrame do
   @moduledoc """
-  Sent in response to an `Exbee.ATCommandFrame` or `Exbee.ATCommandQueueFrame`.
+  Received in response to an `Exbee.ATCommandFrame` or `Exbee.ATCommandQueueFrame`.
 
   Some commands send back multiple frames; for example, the `ND` command.
   """

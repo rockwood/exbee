@@ -9,15 +9,15 @@ defmodule Exbee.Message do
 
   @separator <<0x7E>>
 
-  @decodeable_frames %{
-    0x88 => Exbee.ATCommandResponseFrame,
-    0x8A => Exbee.ModemStatusFrame,
-    0x8B => Exbee.TransmitResponseFrame,
-    0x90 => Exbee.ReceiveFrame,
-    0x91 => Exbee.ReceiveExplicitFrame,
-    0x92 => Exbee.ReceiveSampleFrame,
-    0x94 => Exbee.ReceiveSensorReadFrame,
-    0x97 => Exbee.RemoteATCommandResponseFrame,
+  @decodable_frames %{
+    0x88 => Exbee.ATCommandResultFrame,
+    0x8A => Exbee.DeviceStatusFrame,
+    0x8B => Exbee.TxStatusFrame,
+    0x90 => Exbee.RxFrame,
+    0x91 => Exbee.ExplicitRxFrame,
+    0x92 => Exbee.RxSampleReadFrame,
+    0x94 => Exbee.RxSensorReadFrame,
+    0x97 => Exbee.RemoteATCommandResultFrame,
   }
 
   @doc """

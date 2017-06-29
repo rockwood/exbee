@@ -1,6 +1,6 @@
-defmodule Exbee.ReceiveSensorReadFrame do
+defmodule Exbee.RxSensorReadFrame do
   @moduledoc """
-  Sent when a device receives a remote sensor.
+  Received when a device reads a remote sensor.
   """
 
   @type t :: %__MODULE__{mac_addr: binary, network_addr: binary, options: atom, type: binary,

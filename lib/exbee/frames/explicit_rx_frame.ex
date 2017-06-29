@@ -1,6 +1,6 @@
-defmodule Exbee.ReceiveExplicitFrame do
+defmodule Exbee.ExplicitRxFrame do
   @moduledoc """
-  Similar to the `Exbee.ReceiveFrame` but includes additional attributes from the sender.
+  Similar to the `Exbee.RxFrame` but includes additional attributes from the sender.
 
   A device configured with the explicit API Rx Indicator (`AO = 1`) will return this frame when it
   receives an RF packet.

@@ -3,6 +3,8 @@ defmodule Exbee.ATCommandFrame do
   Query or set AT parameters on a local device.
 
   To query parameter values, send with `value: nil`.
+
+  An `Exbee.ATCommandResultFrame` will be returned indicating the status of the command.
   """
 
   @type t :: %__MODULE__{id: binary, command: String.t, value: binary}

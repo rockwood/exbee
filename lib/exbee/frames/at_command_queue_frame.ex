@@ -7,8 +7,9 @@ defmodule Exbee.ATCommandQueueFrame do
   `command: "AC"`
 
   When querying parameter values, this frame behaves identically to the `Exbee.ATCommandFrame`
-  frame. The device returns register queries immediately and does not queue them. The receiving
-  device will issue `Exbee.ATCommandResponseFrame` in response.
+  frame. The device returns register queries immediately and does not queue them.
+
+  An `Exbee.ATCommandResultFrame` will be returned indicating the status of the command.
   """
 
   @type t :: %__MODULE__{id: binary, command: String.t, value: binary}

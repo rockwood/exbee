@@ -1,6 +1,6 @@
-defmodule Exbee.ReceiveSampleFrame do
+defmodule Exbee.RxSampleReadFrame do
   @moduledoc """
-  Sent when a device receives a remote I/O sample.
+  Received when a device reads a remote I/O sample.
   """
 
   @type t :: %__MODULE__{mac_addr: binary, network_addr: binary, options: atom, samples: binary,

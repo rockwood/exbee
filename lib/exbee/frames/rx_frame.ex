@@ -1,6 +1,6 @@
-defmodule Exbee.ReceiveFrame do
+defmodule Exbee.RxFrame do
   @moduledoc """
-  Sent when a device receives a transmission from a remote node.
+  Received when a device reads a transmission from a remote node.
 
   A device configured with the standard API Rx Indicator (`AO = 0`) will return this frame when it
   receives an RF packet.

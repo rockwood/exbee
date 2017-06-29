@@ -43,12 +43,12 @@ iex> Exbee.send_frame(pid, %Exbee.ATCommandFrame{command: "NJ", value: 1})
 :ok
 
 iex> flush()
-{:exbee, %Exbee.ATCommandResponseFrame{command: "NJ", status: :ok, value: ...}}
+{:exbee, %Exbee.ATCommandResultFrame{command: "NJ", status: :ok, value: ...}}
 ```
 
 ### Configuration
 
-Exbee options can either be passed directly to `Exbee.start_link/2`, or they'll be read from
+Exbee options can either be passed directly to `Exbee.start_link/1`, or they'll be read from
 `:exbee` config values. For example, to default to a specific serial port, add this to the
 project's `config.exs` file.
 

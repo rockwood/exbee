@@ -7,17 +7,17 @@ defmodule Exbee do
 
     * `Exbee.ATCommandFrame`
     * `Exbee.ATCommandQueueFrame`
-    * `Exbee.ATCommandResponseFrame`
-    * `Exbee.ModemStatusFrame`
-    * `Exbee.ReceiveFrame`
-    * `Exbee.ReceiveExplicitFrame`
-    * `Exbee.ReceiveSampleFrame`
-    * `Exbee.ReceiveSensorReadFrame`
+    * `Exbee.ATCommandResultFrame`
     * `Exbee.RemoteATCommandFrame`
-    * `Exbee.RemoteATCommandResponseFrame`
-    * `Exbee.TransmitExplicitFrame`
-    * `Exbee.TransmitFrame`
-    * `Exbee.TransmitResponseFrame`
+    * `Exbee.RemoteATCommandResultFrame`
+    * `Exbee.RxFrame`
+    * `Exbee.RxSampleReadFrame`
+    * `Exbee.RxSensorReadFrame`
+    * `Exbee.TxFrame`
+    * `Exbee.TxResultFrame`
+    * `Exbee.ExplicitTxFrame`
+    * `Exbee.ExplicitRxFrame`
+    * `Exbee.DeviceStatusFrame`
 
   Frames are sent via the `Exbee.send_frame/2` function. Frames received on the serial port are
   reported as messages to the current process. The messages have the following form:
@@ -26,14 +26,14 @@ defmodule Exbee do
 
   This example starts an Exbee process and sends an `Exbee.ATCommandFrame` to change the value of
   the `NJ` parameter. Upon receiving the command, the XBee module will return an
-  `Exbee.ATCommandResponseFrame` indicating the status of the request.
+  `Exbee.ATCommandStatusFrame` indicating the status of the request.
 
       iex> {:ok, pid} = Exbee.start_link(serial_port: "COM1")
       iex> Exbee.send_frame(pid, %Exbee.ATCommandFrame{command: "NJ", value: 1})
       :ok
 
       iex> flush()
-      {:exbee, %Exbee.ATCommandResponseFrame{command: "NJ", status: :ok, value: ...}}
+      {:exbee, %Exbee.ATCommandResultFrame{command: "NJ", status: :ok, value: <0x01>}}
   """
 
   use GenServer

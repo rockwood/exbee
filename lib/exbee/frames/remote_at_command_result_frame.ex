@@ -1,6 +1,6 @@
-defmodule Exbee.RemoteATCommandResponseFrame do
+defmodule Exbee.RemoteATCommandResultFrame do
   @moduledoc """
-  Sent in response to an `Exbee.RemoteATCommandFrame`.
+  Received in response to an `Exbee.RemoteATCommandFrame`.
 
   Some commands end back multiple frames; for example, the `ND` command.
   """

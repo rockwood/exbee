@@ -2,9 +2,46 @@ defmodule Mix.Tasks.Exbee.At do
   @moduledoc false
 
   defmodule Query do
-    @shortdoc "Query configuration values. Options: [command --serial-port]"
+    @switches [
+      serial_port: :string,
+      speed: :integer,
+      data_bits: :integer,
+      stop_bits: :integer,
+      parity: :integer,
+      flow_control: :atom
+    ]
+
+    @shortdoc "Query AT configuration values."
     @moduledoc """
-    Query configuration values. Options: [command --serial-port].
+    #{@shortdoc}
+
+    Depending on the installed firmware, some parameters will respond with `invalid_command`.
+
+    Device options can either be passed via switches (ex: `--serial-port`) or they'll be read from
+    `:exbee` config values
+
+    Switch options include:
+
+    #{
+      @switches
+      |> Keyword.keys()
+      |> Enum.map(&("\n * --" <> (&1 |> to_string() |> String.replace("_", "-"))))
+    }
+
+    Examples:
+
+    Return a list of all AT parameter values:
+
+        > mix exbee.at.query --serial-port COM1 --speed 115200
+        SL: <<0x40, 0xB1, 0x90, 0x74>>
+        SM: invalid_command
+        VR: <<0x21, 0xA7>>
+        SN: <<0x0, 0x1>>
+
+    Return a single AT parameter value:
+
+        > mix exbee.at.query NJ
+        NJ: <<0xFF>>
     """
 
     use Mix.Task
@@ -12,7 +49,7 @@ defmodule Mix.Tasks.Exbee.At do
     alias Exbee.{ATCommands, ATCommandFrame, Request}
 
     def run(args) do
-      {device_args, commands, _} = OptionParser.parse(args, switches: [serial_port: :string])
+      {device_args, commands, _} = OptionParser.parse(args, switches: @switches)
 
       {:ok, response_frames} = commands |> parse_request_frames() |> Request.run(device_args)
 
@@ -37,9 +74,42 @@ defmodule Mix.Tasks.Exbee.At do
   end
 
   defmodule Set do
-    @shortdoc "Set a configuration value. Options: [command=value --serial-port]"
+    @switches [
+      serial_port: :string,
+      speed: :integer,
+      data_bits: :integer,
+      stop_bits: :integer,
+      parity: :integer,
+      flow_control: :atom
+    ]
+
+    @shortdoc "Set AT configuration values."
     @moduledoc """
-    Set a configuration values. Options: [command=value --serial-port].
+    #{@shortdoc}
+
+    Device options can either be passed via switches (ex: `--serial-port`) or they'll be read from
+    `:exbee` config values
+
+    Switch options include:
+
+    #{
+      @switches
+      |> Keyword.keys()
+      |> Enum.map(&("\n * --" <> (&1 |> to_string() |> String.replace("_", "-"))))
+    }
+
+    Examples:
+
+    Set a single AT parameter values:
+
+        > mix exbee.at.query NJ=1 --serial-port COM1 --speed 115200
+        NJ: ok
+
+    Set multiple AT parameter values
+
+        > mix exbee.at.query NJ=255 DL='<<0x0, 0x0, 0xFF, 0xFF>>'
+        NJ: ok
+        DL: ok
     """
 
     use Mix.Task
@@ -73,9 +143,16 @@ defmodule Mix.Tasks.Exbee.At do
   end
 
   defmodule Options do
-    @shortdoc "List available configuration options."
+    @shortdoc "List available AT configuration options."
     @moduledoc """
-    List available configuration options.
+    #{@shortdoc}
+
+    Example:
+
+        > mix exbee.at.options
+        SL: Serial Number Low
+        SM: Sleep Mode
+        VR: Firmware Version
     """
 
     use Mix.Task

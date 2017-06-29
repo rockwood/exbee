@@ -21,9 +21,12 @@ defmodule Exbee.Message do
   }
 
   @doc """
-  Decodes a binary message into frames using the `Exbee.FrameDecoder` protocol. Because messages
-  can arrive incomplete, this returns a buffer of any remaining bytes. The caller should return this
-  buffer prepended to the next message It also validates each frame has the correct checksum.
+  Decodes a binary message into frames using the `Exbee.FrameDecoder` protocol.
+
+  Messages can arrive incomplete, so this returns a buffer of any partial messages. The caller
+  should return this buffer prepended to the next message.
+
+  Frames with invalid checksums will be dropped.
   """
   @spec parse(binary) :: {binary, [struct]}
   def parse(data) do
@@ -31,8 +34,9 @@ defmodule Exbee.Message do
   end
 
   @doc """
-  Encodes a frame into a binary message using the `Exbee.FrameEncoder` protocol. It applies the
-  separator, length, and checksum bytes.
+  Encodes a frame into a binary message using the `Exbee.FrameEncoder` protocol.
+
+  It applies the separator, length, and checksum bytes.
   """
   @spec build(FrameEncoder.t) :: binary
   def build(frame) do
@@ -64,7 +68,7 @@ defmodule Exbee.Message do
       [decoded_frame | frames]
     else
       {:error, reason} ->
-        Logger.debug(reason)
+        Logger.warn(reason)
         frames
     end
   end

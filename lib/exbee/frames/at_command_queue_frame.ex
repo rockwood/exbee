@@ -15,7 +15,7 @@ defmodule Exbee.ATCommandQueueFrame do
   @type t :: %__MODULE__{id: binary, command: String.t, value: binary}
   defstruct [id: 0x01, command: "", value: nil]
 
-  defimpl Exbee.FrameEncoder do
+  defimpl Exbee.EncodableFrame do
     def encode(%{id: id, command: command, value: nil}) do
       <<0x09, id, command::bitstring-size(16)>>
     end

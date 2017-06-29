@@ -16,7 +16,7 @@ defmodule Exbee.DeviceStatusFrame do
   @type t :: %__MODULE__{status: atom}
   defstruct [:status]
 
-  defimpl Exbee.FrameDecoder do
+  defimpl Exbee.DecodableFrame do
     @statuses %{
       0x00 => :hardware_reset,
       0x01 => :watchdog_timer_reset,

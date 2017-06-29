@@ -29,7 +29,7 @@ defmodule Exbee.TxResultFrame do
   defstruct [id: 0x01, network_addr: nil, retry_count: 0, delivery_status: nil,
              discovery_status: nil]
 
-  defimpl Exbee.FrameDecoder do
+  defimpl Exbee.DecodableFrame do
     @delivery_statuses %{
       0x00 => :ok,
       0x01 => :mac_ack_failure,

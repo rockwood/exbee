@@ -8,7 +8,7 @@ defmodule Exbee.ATCommandResultFrame do
   @type t :: %__MODULE__{id: binary, command: String.t, status: atom, value: binary}
   defstruct [id: 0x01, command: nil, status: nil, value: nil]
 
-  defimpl Exbee.FrameDecoder do
+  defimpl Exbee.DecodableFrame do
     @statuses %{
       0x00 => :ok,
       0x01 => :error,

@@ -8,7 +8,7 @@ defmodule Exbee.Request do
 
   require Logger
 
-  @spec run([Exbee.FrameEncoder.t], [], non_neg_integer) :: {:ok, [struct]}
+  @spec run([Exbee.EncodableFrame.t], [], non_neg_integer) :: {:ok, [struct]}
   def run(request_frames, device_options \\ [], frame_timeout \\ @default_frame_timeout) do
     total_timeout = length(request_frames) * frame_timeout
     task = Task.async(fn -> do_run(request_frames, device_options, frame_timeout) end)

@@ -3,7 +3,7 @@ defmodule Exbee.Message do
   Converts between binary messages and frames.
   """
 
-  alias Exbee.{FrameEncoder, FrameDecoder}
+  alias Exbee.{EncodableFrame, DecodableFrame}
 
   require Logger
 
@@ -21,26 +21,26 @@ defmodule Exbee.Message do
   }
 
   @doc """
-  Decodes a binary message into frames using the `Exbee.FrameDecoder` protocol.
+  Decodes a binary message into frames using the `Exbee.DecodableFrame` protocol.
 
   Messages can arrive incomplete, so this returns a buffer of any partial messages. The caller
   should return this buffer prepended to the next message.
 
   Frames with invalid checksums will be dropped.
   """
-  @spec parse(binary) :: {binary, [struct]}
+  @spec parse(binary) :: {binary, [DecodableFrame.t]}
   def parse(data) do
     do_parse(data, <<>>, [])
   end
 
   @doc """
-  Encodes a frame into a binary message using the `Exbee.FrameEncoder` protocol.
+  Encodes a frame into a binary message using the `Exbee.EncodableFrame` protocol.
 
   It applies the separator, length, and checksum bytes.
   """
-  @spec build(FrameEncoder.t) :: binary
+  @spec build(EncodableFrame.t) :: binary
   def build(frame) do
-    encoded_frame = FrameEncoder.encode(frame)
+    encoded_frame = EncodableFrame.encode(frame)
 
     <<@separator,
       byte_size(encoded_frame)::16,
@@ -60,10 +60,10 @@ defmodule Exbee.Message do
   end
 
   defp apply_frame(frames, <<frame_type::8, _rest::binary>> = encoded_frame, checksum) do
-    frame_struct = Map.get(@decodeable_frames, frame_type, Exbee.GenericFrame) |> struct()
+    frame_struct = Map.get(@decodable_frames, frame_type, Exbee.GenericFrame) |> struct()
 
     with {:ok, _} <- validate_checksum(encoded_frame, checksum),
-         {:ok, decoded_frame} <- FrameDecoder.decode(frame_struct, encoded_frame)
+         {:ok, decoded_frame} <- DecodableFrame.decode(frame_struct, encoded_frame)
     do
       [decoded_frame | frames]
     else

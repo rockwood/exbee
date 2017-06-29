@@ -113,10 +113,10 @@ defmodule Exbee do
   @doc """
   Send a frame to a given device.
 
-  A frame must implement the `Exbee.FrameEncoder` protocol, making it possible to define custom
+  A frame must implement the `Exbee.EncodableFrame` protocol, making it possible to define custom
   frames.
   """
-  @spec send_frame(pid, Exbee.FrameEncoder.t) :: :ok | {:error, term}
+  @spec send_frame(pid, Exbee.EncodableFrame.t) :: :ok | {:error, term}
   def send_frame(pid, frame) do
     GenServer.call(pid, {:send_frame, frame})
   end

@@ -7,7 +7,7 @@ defmodule Exbee.RxSensorReadFrame do
                          ad_value: binary, temperature_value: binary}
   defstruct [:mac_addr, :network_addr, :options, :type, :ad_value, :temperature_value]
 
-  defimpl Exbee.FrameDecoder do
+  defimpl Exbee.DecodableFrame do
     @options %{
       0x01 => :acknowledged,
       0x02 => :broadcast

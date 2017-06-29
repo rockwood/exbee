@@ -7,7 +7,7 @@ defmodule Exbee.RxSampleReadFrame do
                          digital_ch: binary, analog_ch: binary, value: binary}
   defstruct [:mac_addr, :network_addr, :options, :samples, :digital_ch, :analog_ch, :value]
 
-  defimpl Exbee.FrameDecoder do
+  defimpl Exbee.DecodableFrame do
     @options %{
       0x01 => :acknowledged,
       0x02 => :broadcast

@@ -9,7 +9,7 @@ defmodule Exbee.RxFrame do
   @type t :: %__MODULE__{mac_addr: binary, network_addr: binary, type: binary, payload: binary}
   defstruct [:mac_addr, :network_addr, :type, :payload]
 
-  defimpl Exbee.FrameDecoder do
+  defimpl Exbee.DecodableFrame do
     def decode(frame, <<0x90, mac_addr::64, network_addr::16, type::8, payload::binary>>) do
       {:ok, %{frame | mac_addr: mac_addr, network_addr: network_addr, type: type, payload: payload}}
     end

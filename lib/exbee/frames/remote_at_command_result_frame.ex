@@ -9,7 +9,7 @@ defmodule Exbee.RemoteATCommandResultFrame do
                          status: atom, value: binary}
   defstruct [:id, :mac_addr, :network_addr, :command, :status, :value]
 
-  defimpl Exbee.FrameDecoder do
+  defimpl Exbee.DecodableFrame do
     @statuses %{
       0x00 => :ok,
       0x01 => :error,

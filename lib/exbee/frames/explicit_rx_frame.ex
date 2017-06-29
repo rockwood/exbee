@@ -11,7 +11,7 @@ defmodule Exbee.ExplicitRxFrame do
   defstruct [:mac_addr, :network_addr, :source, :endpoint, :cluster_id, :profile_id, :type,
              :payload]
 
-  defimpl Exbee.FrameDecoder do
+  defimpl Exbee.DecodableFrame do
     def decode(frame, <<0x91, mac_addr::64, network_addr::16, source::8, endpoint::8,
           cluster_id::8, profile_id::8, type::8, payload::binary>>) do
       {:ok, %{frame | mac_addr: mac_addr, network_addr: network_addr, source: source,

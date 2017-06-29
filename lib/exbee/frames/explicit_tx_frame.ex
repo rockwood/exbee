@@ -30,7 +30,7 @@ defmodule Exbee.ExplicitTxFrame do
              endpoint: nil, cluster_id: nil, profile_id: nil, radius: 0x00,
              options: 0x00, payload: nil]
 
-  defimpl Exbee.FrameEncoder do
+  defimpl Exbee.EncodableFrame do
     def encode(%{id: id, mac_addr: mac_addr, network_addr: network_addr, source: source,
                  endpoint: endpoint, cluster_id: cluster_id, profile_id: profile_id,
                  radius: radius, options: options, payload: payload}) do

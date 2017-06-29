@@ -12,7 +12,7 @@ defmodule Exbee.Message do
   @decodable_frames %{
     0x88 => Exbee.ATCommandResultFrame,
     0x8A => Exbee.DeviceStatusFrame,
-    0x8B => Exbee.TxStatusFrame,
+    0x8B => Exbee.TxResultFrame,
     0x90 => Exbee.RxFrame,
     0x91 => Exbee.ExplicitRxFrame,
     0x92 => Exbee.RxSampleReadFrame,

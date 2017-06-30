@@ -1,27 +1,27 @@
 defmodule Exbee.TxResultFrame do
   @moduledoc """
   Received upon completion of a `Exbee.TxFrame` or `Exbee.ExplicitTxFrame`. The
-  `:deliver_status` indicates whether the transmission was successful.
+  `:status` attribute indicates whether the transmission was successful.
 
   Possible status values include:
 
-    * :ok (`0x00`)
-    * :mac_ack_failure (`0x01`)
-    * :cca_failure (`0x02`)
-    * :invalid_endpoint (`0x15`)
-    * :network_ack_failure (`0x21`)
-    * :network_not_joined (`0x22`)
-    * :self_addressed (`0x23`)
-    * :address_not_found (`0x24`)
-    * :route_not_found (`0x25`)
-    * :relay_failure (`0x26`)
-    * :invalid_binding_table_index (`0x2B`)
-    * :resource_error (`0x2C`)
-    * :aps_transmission (`0x2D`)
-    * :aps_unicast_transmission (`0x2E`)
-    * :resource_error (`0x32`)
-    * :oversized_payload (`0x74`)
-    * :indirect_message_failure (`0x75`)
+    * `:ok` (`0x00`)
+    * `:mac_ack_failure` (`0x01`)
+    * `:cca_failure` (`0x02`)
+    * `:invalid_endpoint` (`0x15`)
+    * `:network_ack_failure` (`0x21`)
+    * `:network_not_joined` (`0x22`)
+    * `:self_addressed` (`0x23`)
+    * `:address_not_found` (`0x24`)
+    * `:route_not_found` (`0x25`)
+    * `:relay_failure` (`0x26`)
+    * `:invalid_binding_table_index` (`0x2B`)
+    * `:resource_error` (`0x2C`)
+    * `:aps_transmission` (`0x2D`)
+    * `:aps_unicast_transmission` (`0x2E`)
+    * `:resource_error` (`0x32`)
+    * `:oversized_payload` (`0x74`)
+    * `:indirect_message_failure` (`0x75`)
   """
 
   @type t :: %__MODULE__{id: integer, network_addr: integer, retry_count: integer, status: integer,

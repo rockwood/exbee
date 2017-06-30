@@ -36,7 +36,7 @@ reported as messages to the current process. The messages have the form: `{:exbe
 
 This example starts an Exbee process and sends an `Exbee.ATCommandFrame` to change the value of
 the `NJ` parameter. Upon receiving the command, the XBee module will return an
-`Exbee.ATCommandResponseFrame` indicating the status of the request.
+`Exbee.ATCommandResultFrame` indicating the status of the request.
 
 ```elixir
 iex> Exbee.send_frame(pid, %Exbee.ATCommandFrame{command: "NJ", value: 1})

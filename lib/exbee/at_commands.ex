@@ -89,7 +89,6 @@ defmodule Exbee.ATCommands do
     "GT" => "Guard Times",
     "CC" => "Command Charact",
     "SM" => "Sleep Mode",
-    "SP" => "Sleep Period",
     "ST" => "Time before Sleep",
     "SO" => "Sleep Options",
     "WH" => "Wake Host Delay",

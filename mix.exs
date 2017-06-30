@@ -16,6 +16,10 @@ defmodule Exbee.Mixfile do
       docs: [
         main: "readme",
         extras: ["README.md"]
+      ],
+      dialyzer: [
+        ignore_warnings: ".dialyzer-ignore-warnings",
+        plt_add_apps: [:mix]
       ]
     ]
   end
@@ -27,7 +31,8 @@ defmodule Exbee.Mixfile do
   defp deps do
     [
       {:nerves_uart, "~> 0.1.2"},
-      {:ex_doc, "~> 0.14", only: :dev}
+      {:ex_doc, "~> 0.14", only: :dev},
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
     ]
   end
 

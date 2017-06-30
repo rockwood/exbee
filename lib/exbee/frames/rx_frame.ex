@@ -6,7 +6,7 @@ defmodule Exbee.RxFrame do
   receives an RF packet.
   """
 
-  @type t :: %__MODULE__{mac_addr: binary, network_addr: binary, type: binary, payload: binary}
+  @type t :: %__MODULE__{mac_addr: integer, network_addr: integer, type: integer, payload: binary}
   defstruct [:mac_addr, :network_addr, :type, :payload]
 
   defimpl Exbee.DecodableFrame do

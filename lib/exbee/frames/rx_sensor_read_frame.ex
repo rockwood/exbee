@@ -3,8 +3,8 @@ defmodule Exbee.RxSensorReadFrame do
   Received when a device reads a remote sensor.
   """
 
-  @type t :: %__MODULE__{mac_addr: binary, network_addr: binary, options: atom, type: binary,
-                         ad_value: binary, temperature_value: binary}
+  @type t :: %__MODULE__{mac_addr: integer, network_addr: integer, options: atom, type: integer,
+                         ad_value: integer, temperature_value: integer}
   defstruct [:mac_addr, :network_addr, :options, :type, :ad_value, :temperature_value]
 
   defimpl Exbee.DecodableFrame do

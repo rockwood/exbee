@@ -5,7 +5,7 @@ defmodule Exbee.RemoteATCommandResultFrame do
   Some commands end back multiple frames; for example, the `ND` command.
   """
 
-  @type t :: %__MODULE__{id: binary, mac_addr: binary, network_addr: binary, command: String.t,
+  @type t :: %__MODULE__{id: integer, mac_addr: integer, network_addr: integer, command: String.t,
                          status: atom, value: binary}
   defstruct [:id, :mac_addr, :network_addr, :command, :status, :value]
 

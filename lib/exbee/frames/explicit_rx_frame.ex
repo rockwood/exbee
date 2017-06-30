@@ -6,8 +6,9 @@ defmodule Exbee.ExplicitRxFrame do
   receives an RF packet.
   """
 
-  @type t :: %__MODULE__{mac_addr: binary, network_addr: binary, source: binary, endpoint: binary,
-                         cluster_id: binary, profile_id: binary, type: binary, payload: binary}
+  @type t :: %__MODULE__{mac_addr: integer, network_addr: integer, source: integer,
+                         endpoint: integer, cluster_id: integer, profile_id: integer, type: integer,
+                         payload: binary}
   defstruct [:mac_addr, :network_addr, :source, :endpoint, :cluster_id, :profile_id, :type,
              :payload]
 

@@ -3,8 +3,8 @@ defmodule Exbee.RxSampleReadFrame do
   Received when a device reads a remote I/O sample.
   """
 
-  @type t :: %__MODULE__{mac_addr: binary, network_addr: binary, options: atom, samples: binary,
-                         digital_ch: binary, analog_ch: binary, value: binary}
+  @type t :: %__MODULE__{mac_addr: integer, network_addr: integer, options: atom, samples: integer,
+                         digital_ch: integer, analog_ch: integer, value: binary}
   defstruct [:mac_addr, :network_addr, :options, :samples, :digital_ch, :analog_ch, :value]
 
   defimpl Exbee.DecodableFrame do

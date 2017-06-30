@@ -23,9 +23,9 @@ defmodule Exbee.ExplicitTxFrame do
   An `Exbee.TxResultFrame` will be returned indicating the status of the transmission.
   """
 
-  @type t :: %__MODULE__{id: binary, mac_addr: binary, network_addr: binary, source: binary,
-                         endpoint: binary, cluster_id: binary, profile_id: binary, radius: binary,
-                         options: binary, payload: binary}
+  @type t :: %__MODULE__{id: integer, mac_addr: integer, network_addr: integer, source: integer,
+                         endpoint: integer, cluster_id: integer, profile_id: integer,
+                         radius: integer, options: integer, payload: binary}
   defstruct [id: 0x01, mac_addr: 0x000000000000FFFF, network_addr: 0xFFFE, source: nil,
              endpoint: nil, cluster_id: nil, profile_id: nil, radius: 0x00,
              options: 0x00, payload: nil]

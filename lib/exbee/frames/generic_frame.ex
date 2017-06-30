@@ -1,5 +1,5 @@
 defmodule Exbee.GenericFrame do
-  @type t :: %__MODULE__{type: binary, payload: binary}
+  @type t :: %__MODULE__{type: integer, payload: binary}
   defstruct [:type, :payload]
 
   defimpl Exbee.DecodableFrame do

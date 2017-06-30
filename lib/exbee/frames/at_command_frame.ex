@@ -7,7 +7,7 @@ defmodule Exbee.ATCommandFrame do
   An `Exbee.ATCommandResultFrame` will be returned indicating the status of the command.
   """
 
-  @type t :: %__MODULE__{id: binary, command: String.t, value: binary}
+  @type t :: %__MODULE__{id: integer, command: String.t, value: binary}
   defstruct [id: 0x01, command: "", value: nil]
 
   defimpl Exbee.EncodableFrame do

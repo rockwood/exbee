@@ -31,11 +31,14 @@ defmodule Exbee.ExplicitTxFrame do
              options: 0x00, payload: nil]
 
   defimpl Exbee.EncodableFrame do
+    alias Exbee.Util
+
     def encode(%{id: id, mac_addr: mac_addr, network_addr: network_addr, source: source,
                  endpoint: endpoint, cluster_id: cluster_id, profile_id: profile_id,
                  radius: radius, options: options, payload: payload}) do
+      binary_payload = Util.to_binary(payload)
       <<0x11, id::8, mac_addr::64, network_addr::16, source::8, endpoint::8, cluster_id::16,
-        profile_id::16, radius::8, options::8, payload::binary>>
+        profile_id::16, radius::8, options::8, binary_payload::binary>>
     end
   end
 end

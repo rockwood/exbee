@@ -16,14 +16,14 @@ defmodule Exbee.ATCommandQueueFrame do
   defstruct [id: 0x01, command: "", value: nil]
 
   defimpl Exbee.EncodableFrame do
+    alias Exbee.Util
+
     def encode(%{id: id, command: command, value: nil}) do
       <<0x09, id, command::bitstring-size(16)>>
     end
-    def encode(%{id: id, command: command, value: value}) when is_integer(value) do
-      <<0x09, id, command::bitstring-size(16), value>>
-    end
-    def encode(%{id: id, command: command, value: value}) when is_binary(value) do
-      <<0x09, id, command::bitstring-size(16), value::binary>>
+    def encode(%{id: id, command: command, value: value}) do
+      binary_value = Util.to_binary(value)
+      <<0x09, id, command::bitstring-size(16), binary_value::binary>>
     end
   end
 end

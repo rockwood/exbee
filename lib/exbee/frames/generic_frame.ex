@@ -9,8 +9,10 @@ defmodule Exbee.GenericFrame do
   end
 
   defimpl Exbee.EncodableFrame do
+    alias Exbee.Util
+
     def encode(%{type: type, payload: payload}) do
-      <<type, payload::binary>>
+      <<type, Util.to_binary(payload)::binary>>
     end
   end
 end

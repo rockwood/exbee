@@ -39,6 +39,7 @@ the `NJ` parameter. Upon receiving the command, the XBee module will return an
 `Exbee.ATCommandResultFrame` indicating the status of the request.
 
 ```elixir
+iex> {:ok, pid} = Exbee.start_link(serial_port: "COM1", speed: 9600)
 iex> Exbee.send_frame(pid, %Exbee.ATCommandFrame{command: "NJ", value: 1})
 :ok
 

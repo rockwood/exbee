@@ -5,8 +5,8 @@ defmodule Exbee.ATCommandResultFrame do
   Some commands send back multiple frames; for example, the `ND` command.
   """
 
-  @type t :: %__MODULE__{id: integer, command: String.t, status: atom, value: binary}
-  defstruct [id: 0x01, command: nil, status: nil, value: nil]
+  @type t :: %__MODULE__{id: integer, command: String.t(), status: atom, value: binary}
+  defstruct id: 0x01, command: nil, status: nil, value: nil
 
   defimpl Exbee.DecodableFrame do
     @statuses %{
@@ -14,7 +14,7 @@ defmodule Exbee.ATCommandResultFrame do
       0x01 => :error,
       0x02 => :invalid_command,
       0x03 => :invalid_parameter,
-      0x04 => :transmition_failure,
+      0x04 => :transmition_failure
     }
 
     def decode(frame, encoded_binary) do

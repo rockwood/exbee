@@ -24,10 +24,14 @@ defmodule Exbee.TxResultFrame do
     * `:indirect_message_failure` (`0x75`)
   """
 
-  @type t :: %__MODULE__{id: integer, network_addr: integer, retry_count: integer, status: integer,
-                         discovery: integer}
-  defstruct [id: 0x01, network_addr: nil, retry_count: 0, status: nil,
-             discovery: nil]
+  @type t :: %__MODULE__{
+          id: integer,
+          network_addr: integer,
+          retry_count: integer,
+          status: integer,
+          discovery: integer
+        }
+  defstruct id: 0x01, network_addr: nil, retry_count: 0, status: nil, discovery: nil
 
   defimpl Exbee.DecodableFrame do
     @statuses %{
@@ -47,7 +51,7 @@ defmodule Exbee.TxResultFrame do
       0x2E => :aps_unicast_transmission,
       0x32 => :resource_error,
       0x74 => :oversized_payload,
-      0x75 => :indirect_message_failure,
+      0x75 => :indirect_message_failure
     }
 
     @discoveries %{
@@ -55,14 +59,23 @@ defmodule Exbee.TxResultFrame do
       0x01 => :address,
       0x02 => :route,
       0x03 => :address_and_route,
-      0x40 => :extended_timeout,
+      0x40 => :extended_timeout
     }
 
     def decode(frame, encoded_binary) do
       case encoded_binary do
         <<0x8B, id::8, network_addr::16, retry_count::8, status::8, discovery::8>> ->
-          {:ok, %{frame | id: id, network_addr: network_addr, retry_count: retry_count,
-                  status: @statuses[status], discovery: @discoveries[discovery]}}
+          decoded_frame = %{
+            frame
+            | id: id,
+              network_addr: network_addr,
+              retry_count: retry_count,
+              status: @statuses[status],
+              discovery: @discoveries[discovery]
+          }
+
+          {:ok, decoded_frame}
+
         _ ->
           {:error, :invalid_binary}
       end

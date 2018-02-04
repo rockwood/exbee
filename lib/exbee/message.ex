@@ -17,7 +17,7 @@ defmodule Exbee.Message do
     0x91 => Exbee.ExplicitRxFrame,
     0x92 => Exbee.RxSampleReadFrame,
     0x94 => Exbee.RxSensorReadFrame,
-    0x97 => Exbee.RemoteATCommandResultFrame,
+    0x97 => Exbee.RemoteATCommandResultFrame
   }
 
   @doc """
@@ -28,7 +28,7 @@ defmodule Exbee.Message do
 
   Frames with invalid checksums will be dropped.
   """
-  @spec parse(binary) :: {binary, [DecodableFrame.t]}
+  @spec parse(binary) :: {binary, [DecodableFrame.t()]}
   def parse(data) do
     do_parse(data, <<>>, [])
   end
@@ -38,22 +38,22 @@ defmodule Exbee.Message do
 
   It applies the separator, length, and checksum bytes.
   """
-  @spec build(EncodableFrame.t) :: binary
+  @spec build(EncodableFrame.t()) :: binary
   def build(frame) do
     encoded_frame = EncodableFrame.encode(frame)
 
-    <<@separator,
-      byte_size(encoded_frame)::16,
-      encoded_frame::binary,
+    <<@separator, byte_size(encoded_frame)::16, encoded_frame::binary,
       calculate_checksum(encoded_frame)>>
   end
 
   defp do_parse(data, buffer, frames) when byte_size(data) < 1, do: {buffer, frames}
   defp do_parse(<<@separator, rest::binary>>, _, frames), do: do_parse(rest, <<@separator>>, frames)
+
   defp do_parse(<<next_char::binary-size(1), rest::binary>>, buffer, frames) do
     case buffer <> next_char do
       <<@separator, length::16, encoded_frame::binary-size(length), checksum::8>> ->
         do_parse(rest, <<>>, apply_frame(frames, encoded_frame, checksum))
+
       new_buffer ->
         do_parse(rest, new_buffer, frames)
     end
@@ -63,8 +63,7 @@ defmodule Exbee.Message do
     frame_struct = Map.get(@decodable_frames, frame_type, Exbee.GenericFrame) |> struct()
 
     with {:ok, _} <- validate_checksum(encoded_frame, checksum),
-         {:ok, decoded_frame} <- DecodableFrame.decode(frame_struct, encoded_frame)
-    do
+         {:ok, decoded_frame} <- DecodableFrame.decode(frame_struct, encoded_frame) do
       [decoded_frame | frames]
     else
       {:error, reason} ->
@@ -79,8 +78,8 @@ defmodule Exbee.Message do
     if calculated == checksum do
       {:ok, calculated}
     else
-      details = "Should equal #{inspect calculated}, but got #{inspect checksum}"
-      {:error, "Invalid checksum for frame #{inspect encoded_frame}. (#{details})"}
+      details = "Should equal #{inspect(calculated)}, but got #{inspect(checksum)}"
+      {:error, "Invalid checksum for frame #{inspect(encoded_frame)}. (#{details})"}
     end
   end
 

@@ -24,7 +24,7 @@ defmodule Exbee.DeviceStatusFrame do
       0x06 => :coordinator_started,
       0x07 => :security_key_updated,
       0x0D => :voltage_supply_limit_exceeded,
-      0x11 => :modem_configuration_change,
+      0x11 => :modem_configuration_change
     }
 
     def decode(frame, encoded_binary) do

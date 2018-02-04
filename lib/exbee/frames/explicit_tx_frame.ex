@@ -23,22 +23,46 @@ defmodule Exbee.ExplicitTxFrame do
   An `Exbee.TxResultFrame` will be returned indicating the status of the transmission.
   """
 
-  @type t :: %__MODULE__{id: integer, mac_addr: integer, network_addr: integer, source: integer,
-                         endpoint: integer, cluster_id: integer, profile_id: integer,
-                         radius: integer, options: integer, payload: binary}
-  defstruct [id: 0x01, mac_addr: 0x000000000000FFFF, network_addr: 0xFFFE, source: nil,
-             endpoint: nil, cluster_id: nil, profile_id: nil, radius: 0x00,
-             options: 0x00, payload: nil]
+  @type t :: %__MODULE__{
+          id: integer,
+          mac_addr: integer,
+          network_addr: integer,
+          source: integer,
+          endpoint: integer,
+          cluster_id: integer,
+          profile_id: integer,
+          radius: integer,
+          options: integer,
+          payload: binary
+        }
+  defstruct id: 0x01,
+            mac_addr: 0x000000000000FFFF,
+            network_addr: 0xFFFE,
+            source: nil,
+            endpoint: nil,
+            cluster_id: nil,
+            profile_id: nil,
+            radius: 0x00,
+            options: 0x00,
+            payload: nil
 
   defimpl Exbee.EncodableFrame do
     alias Exbee.Util
 
-    def encode(%{id: id, mac_addr: mac_addr, network_addr: network_addr, source: source,
-                 endpoint: endpoint, cluster_id: cluster_id, profile_id: profile_id,
-                 radius: radius, options: options, payload: payload}) do
-      binary_payload = Util.to_binary(payload)
+    def encode(%{
+          id: id,
+          mac_addr: mac_addr,
+          network_addr: network_addr,
+          source: source,
+          endpoint: endpoint,
+          cluster_id: cluster_id,
+          profile_id: profile_id,
+          radius: radius,
+          options: options,
+          payload: payload
+        }) do
       <<0x11, id::8, mac_addr::64, network_addr::16, source::8, endpoint::8, cluster_id::16,
-        profile_id::16, radius::8, options::8, binary_payload::binary>>
+        profile_id::16, radius::8, options::8, Util.to_binary(payload)::binary>>
     end
   end
 end

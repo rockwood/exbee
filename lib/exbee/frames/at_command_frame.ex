@@ -7,18 +7,20 @@ defmodule Exbee.ATCommandFrame do
   An `Exbee.ATCommandResultFrame` will be returned indicating the status of the command.
   """
 
-  @type t :: %__MODULE__{id: integer, command: String.t, value: binary}
-  defstruct [id: 0x01, command: "", value: nil]
+  @type t :: %__MODULE__{id: integer, command: String.t(), value: binary}
+  defstruct id: 0x01, command: "", value: nil
 
   defimpl Exbee.EncodableFrame do
     alias Exbee.Util
 
-    def encode(%{id: id, command: command, value: nil}) do
-      <<0x08, id, command::bitstring-size(16)>>
-    end
-    def encode(%{id: id, command: command, value: value}) do
-      binary_value = Util.to_binary(value)
-      <<0x08, id, command::bitstring-size(16), binary_value::binary>>
+    def encode(frame = %{id: id, command: command}) do
+      case frame do
+        %{value: nil} ->
+          <<0x08, id, command::bitstring-size(16)>>
+
+        %{value: value} ->
+          <<0x08, id, command::bitstring-size(16), Util.to_binary(value)::binary>>
+      end
     end
   end
 end

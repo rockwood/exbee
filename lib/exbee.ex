@@ -65,12 +65,12 @@ defmodule Exbee do
   """
 
   @type device_option ::
-    {:serial_port, String.t} |
-    {:speed, non_neg_integer} |
-    {:data_bits, 5..8} |
-    {:stop_bits, 1..2} |
-    {:parity, :none | :even | :odd | :space | :mark} |
-    {:flow_control, :none | :hardware | :software}
+          {:serial_port, String.t()}
+          | {:speed, non_neg_integer}
+          | {:data_bits, 5..8}
+          | {:stop_bits, 1..2}
+          | {:parity, :none | :even | :odd | :space | :mark}
+          | {:flow_control, :none | :hardware | :software}
 
   @spec serial_ports :: map
   def serial_ports do
@@ -116,7 +116,7 @@ defmodule Exbee do
   A frame must implement the `Exbee.EncodableFrame` protocol, making it possible to define custom
   frames.
   """
-  @spec send_frame(pid, Exbee.EncodableFrame.t) :: :ok | {:error, term}
+  @spec send_frame(pid, Exbee.EncodableFrame.t()) :: :ok | {:error, term}
   def send_frame(pid, frame) do
     GenServer.call(pid, {:send_frame, frame})
   end
@@ -146,6 +146,7 @@ defmodule Exbee do
   def handle_call({:send_frame, frame}, _, %{adapter: adapter, adapter_pid: adapter_pid} = state) do
     {:reply, adapter.write(adapter_pid, Message.build(frame)), state}
   end
+
   def handle_call(:stop, _, %{adapter: adapter, adapter_pid: adapter_pid} = state) do
     {:reply, adapter.stop(adapter_pid), state}
   end

@@ -34,7 +34,7 @@ defmodule Exbee.FakeAdapter do
   end
 
   def handle_call({:write, _message}, _, %{controlling_pid: controlling_pid} = state) do
-    send controlling_pid, {:nerves_uart, 0, MessageQueue.dequeue()}
+    send(controlling_pid, {:nerves_uart, 0, MessageQueue.dequeue()})
     {:reply, :ok, state}
   end
 
@@ -44,7 +44,7 @@ defmodule Exbee.FakeAdapter do
     use GenServer
 
     def start_link do
-      GenServer.start_link(__MODULE__, [], [name: __MODULE__])
+      GenServer.start_link(__MODULE__, [], name: __MODULE__)
     end
 
     def init(queue) do
@@ -62,6 +62,7 @@ defmodule Exbee.FakeAdapter do
     def handle_call({:enqueue, message}, _from, queue) do
       {:reply, :ok, message ++ queue}
     end
+
     def handle_call(:dequeue, _from, [message | rest]) do
       {:reply, message, rest}
     end

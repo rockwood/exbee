@@ -13,7 +13,16 @@ defmodule Exbee.RxFrame do
     def decode(frame, encoded_binary) do
       case encoded_binary do
         <<0x90, mac_addr::64, network_addr::16, type::8, payload::binary>> ->
-          {:ok, %{frame | mac_addr: mac_addr, network_addr: network_addr, type: type, payload: payload}}
+          decoded_frame = %{
+            frame
+            | mac_addr: mac_addr,
+              network_addr: network_addr,
+              type: type,
+              payload: payload
+          }
+
+          {:ok, decoded_frame}
+
         _ ->
           {:error, :invalid_binary}
       end

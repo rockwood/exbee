@@ -13,7 +13,7 @@ defmodule Exbee.EndToEndTest do
   describe "send_frame/2" do
     test "sends the frame and receives a response", %{device: device} do
       assert :ok = Exbee.send_frame(device, %ATCommandFrame{command: "NJ"})
-      assert_receive {:exbee,  %ATCommandResultFrame{command: "NJ", status: :ok}}
+      assert_receive {:exbee, %ATCommandResultFrame{command: "NJ", status: :ok}}
     end
   end
 end

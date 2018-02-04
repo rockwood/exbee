@@ -8,7 +8,7 @@ defmodule Exbee.Request do
 
   require Logger
 
-  @spec run([Exbee.EncodableFrame.t], [], non_neg_integer) :: {:ok, [struct]}
+  @spec run([Exbee.EncodableFrame.t()], [], non_neg_integer) :: {:ok, [struct]}
   def run(request_frames, device_options \\ [], frame_timeout \\ @default_frame_timeout) do
     total_timeout = length(request_frames) * frame_timeout
     task = Task.async(fn -> do_run(request_frames, device_options, frame_timeout) end)
@@ -22,17 +22,19 @@ defmodule Exbee.Request do
   defp do_run(request_frames, device_options, frame_timeout) do
     {:ok, device} = Exbee.start_link(device_options)
 
-    results = Enum.flat_map request_frames, fn(request_frame) ->
-      Exbee.send_frame(device, request_frame)
+    results =
+      Enum.flat_map(request_frames, fn request_frame ->
+        Exbee.send_frame(device, request_frame)
 
-      case receive_frame(frame_timeout) do
-        {:ok, response_frame} ->
-          [response_frame]
-        {:error, reason} ->
-          Logger.warn("#{reason} (#{inspect request_frame})")
-          []
-      end
-    end
+        case receive_frame(frame_timeout) do
+          {:ok, response_frame} ->
+            [response_frame]
+
+          {:error, reason} ->
+            Logger.warn("#{reason} (#{inspect(request_frame)})")
+            []
+        end
+      end)
 
     :ok = Exbee.stop(device)
 

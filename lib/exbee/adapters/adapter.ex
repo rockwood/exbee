@@ -4,11 +4,11 @@ defmodule Exbee.Adapter do
   """
 
   @type adapter_option ::
-    {:speed, non_neg_integer} |
-    {:data_bits, 5..8} |
-    {:stop_bits, 1..2} |
-    {:parity, :none | :even | :odd | :space | :mark} |
-    {:flow_control, :none | :hardware | :software}
+          {:speed, non_neg_integer}
+          | {:data_bits, 5..8}
+          | {:stop_bits, 1..2}
+          | {:parity, :none | :even | :odd | :space | :mark}
+          | {:flow_control, :none | :hardware | :software}
 
   @callback enumerate() :: map
   @callback start_link() :: {:ok, pid} | {:error, term}

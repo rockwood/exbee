@@ -57,8 +57,10 @@ defmodule Mix.Tasks.Exbee.At do
         case frame do
           %{command: command, value: value, status: :ok} ->
             IO.puts("#{command}: #{inspect(value, base: :hex)}")
+
           %{command: command, status: error_status} ->
             IO.puts("#{command}: #{error_status}")
+
           _ ->
             nil
         end
@@ -66,6 +68,7 @@ defmodule Mix.Tasks.Exbee.At do
     end
 
     defp parse_request_frames([]), do: ATCommands.all() |> Map.keys() |> parse_request_frames()
+
     defp parse_request_frames(commands) do
       for command <- commands do
         %ATCommandFrame{command: command}
@@ -124,7 +127,7 @@ defmodule Mix.Tasks.Exbee.At do
       for frame <- response_frames do
         case frame do
           %{command: command, status: status} -> IO.puts("#{command}: #{status}")
-          other_frame -> IO.puts("#{inspect other_frame}")
+          other_frame -> IO.puts("#{inspect(other_frame)}")
         end
       end
     end
@@ -135,6 +138,7 @@ defmodule Mix.Tasks.Exbee.At do
           [raw_command, raw_value] ->
             {value, _} = Code.eval_string(raw_value)
             %ATCommandFrame{command: String.upcase(raw_command), value: value}
+
           _ ->
             raise ArgumentError, message: "Unable to parse #{command_pair}."
         end

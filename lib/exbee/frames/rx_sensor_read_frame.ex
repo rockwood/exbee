@@ -19,10 +19,14 @@ defmodule Exbee.RxSensorReadFrame do
       0x60 => :water_present,
     }
 
-    def decode(frame, <<0x94, mac_addr::64, network_addr::16, options::8, type::8, ad_value::64,
-          temperature_value::16>>) do
-      {:ok, %{frame | mac_addr: mac_addr, network_addr: network_addr, options: @options[options],
-              type: @types[type], ad_value: ad_value, temperature_value: temperature_value}}
+    def decode(frame, encoded_binary) do
+      case encoded_binary do
+        <<0x94, mac_addr::64, network_addr::16, options::8, type::8, ad_value::64, temp::16>> ->
+          {:ok, %{frame | mac_addr: mac_addr, network_addr: network_addr, options: @options[options],
+                  type: @types[type], ad_value: ad_value, temperature_value: temp}}
+        _ ->
+          {:error, :invalid_binary}
+      end
     end
   end
 end

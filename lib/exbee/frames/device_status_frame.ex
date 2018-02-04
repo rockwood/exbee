@@ -27,8 +27,14 @@ defmodule Exbee.DeviceStatusFrame do
       0x11 => :modem_configuration_change,
     }
 
-    def decode(frame, <<0x8A, status::8>>) do
-      {:ok, %{frame | status: Map.get(@statuses, status, status)}}
+    def decode(frame, encoded_binary) do
+      case encoded_binary do
+        <<0x8A, status::8>> ->
+          {:ok, %{frame | status: Map.get(@statuses, status, status)}}
+
+        _ ->
+          {:error, :invalid_binary}
+      end
     end
   end
 end

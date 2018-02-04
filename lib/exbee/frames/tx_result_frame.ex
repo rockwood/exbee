@@ -58,9 +58,14 @@ defmodule Exbee.TxResultFrame do
       0x40 => :extended_timeout,
     }
 
-    def decode(frame, <<0x8B, id::8, network_addr::16, retry_count::8, status::8, discovery::8>>) do
-      {:ok, %{frame | id: id, network_addr: network_addr, retry_count: retry_count,
-               status: @statuses[status], discovery: @discoveries[discovery]}}
+    def decode(frame, encoded_binary) do
+      case encoded_binary do
+        <<0x8B, id::8, network_addr::16, retry_count::8, status::8, discovery::8>> ->
+          {:ok, %{frame | id: id, network_addr: network_addr, retry_count: retry_count,
+                  status: @statuses[status], discovery: @discoveries[discovery]}}
+        _ ->
+          {:error, :invalid_binary}
+      end
     end
   end
 end

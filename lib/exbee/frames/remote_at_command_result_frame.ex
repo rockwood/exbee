@@ -18,10 +18,14 @@ defmodule Exbee.RemoteATCommandResultFrame do
       0x04 => :transmition_failure,
     }
 
-    def decode(frame, <<0x97, id::8, mac_addr::64, network_addr::16, command::bitstring-size(16),
-          status::8, value::binary>>) do
-      {:ok, %{frame | id: id, mac_addr: mac_addr, network_addr: network_addr, command: command,
-              status: @statuses[status], value: value}}
+    def decode(frame, encoded_binary) do
+      case encoded_binary do
+        <<0x97, id::8, mac_addr::64, network_addr::16, command::bitstring-size(16), status::8, value::binary>> ->
+          {:ok, %{frame | id: id, mac_addr: mac_addr, network_addr: network_addr, command: command,
+                  status: @statuses[status], value: value}}
+        _ ->
+          {:error, :invalid_binary}
+      end
     end
   end
 end

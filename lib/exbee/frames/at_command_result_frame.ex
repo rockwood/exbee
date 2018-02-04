@@ -17,8 +17,14 @@ defmodule Exbee.ATCommandResultFrame do
       0x04 => :transmition_failure,
     }
 
-    def decode(frame, <<0x88, id::8, command::bitstring-size(16), status::8, value::binary>>) do
-      {:ok, %{frame | id: id, command: command, status: @statuses[status], value: value}}
+    def decode(frame, encoded_binary) do
+      case encoded_binary do
+        <<0x88, id::8, command::bitstring-size(16), status::8, value::binary>> ->
+          {:ok, %{frame | id: id, command: command, status: @statuses[status], value: value}}
+
+        _ ->
+          {:error, :invalid_binary}
+      end
     end
   end
 end

@@ -3,8 +3,11 @@ defmodule Exbee.GenericFrame do
   defstruct [:type, :payload]
 
   defimpl Exbee.DecodableFrame do
-    def decode(frame, <<type::8, payload::binary>>) do
-      {:ok, %{frame | type: type, payload: payload}}
+    def decode(frame, encoded_binary) do
+      case encoded_binary do
+        <<type::8, payload::binary>> -> {:ok, %{frame | type: type, payload: payload}}
+        _ -> {:error, :invalid_binary}
+      end
     end
   end
 

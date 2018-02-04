@@ -21,6 +21,10 @@ defmodule Exbee.FakeAdapter do
     GenServer.start_link(__MODULE__, %State{controlling_pid: self()})
   end
 
+  def init(state) do
+    {:ok, state}
+  end
+
   def open(_pid, _serial_port, _opts), do: :ok
 
   def stop(_pid), do: :ok
@@ -41,6 +45,10 @@ defmodule Exbee.FakeAdapter do
 
     def start_link do
       GenServer.start_link(__MODULE__, [], [name: __MODULE__])
+    end
+
+    def init(queue) do
+      {:ok, queue}
     end
 
     def enqueue(messages) do

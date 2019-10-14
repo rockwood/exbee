@@ -23,7 +23,7 @@ defmodule Exbee.RxSampleReadFrame do
     def decode(frame, encoded_binary) do
       case encoded_binary do
         <<0x92, mac_addr::64, network_addr::16, options::8, samples::8, digital_ch::16,
-          analog_ch::8, value::16>> ->
+          analog_ch::8, value::binary>> ->
           decoded_frame = %{
             frame
             | mac_addr: mac_addr,
